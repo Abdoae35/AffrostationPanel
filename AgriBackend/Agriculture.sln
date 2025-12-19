@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agriculture.API", "Agriculture.API\Agriculture.API.csproj", "{D26A7F5E-BCB5-4F12-BDFE-70B91C812DBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agriculture.BLL", "Agriculture.BLL\Agriculture.BLL.csproj", "{07E5D099-19B3-4BC6-A26A-8279C57EDF87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agriculture.DAL", "Agriculture.DAL\Agriculture.DAL.csproj", "{5B9A01A5-F1FC-4AB1-BB16-57958733E6F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D26A7F5E-BCB5-4F12-BDFE-70B91C812DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D26A7F5E-BCB5-4F12-BDFE-70B91C812DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D26A7F5E-BCB5-4F12-BDFE-70B91C812DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D26A7F5E-BCB5-4F12-BDFE-70B91C812DBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E5D099-19B3-4BC6-A26A-8279C57EDF87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E5D099-19B3-4BC6-A26A-8279C57EDF87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E5D099-19B3-4BC6-A26A-8279C57EDF87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E5D099-19B3-4BC6-A26A-8279C57EDF87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B9A01A5-F1FC-4AB1-BB16-57958733E6F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B9A01A5-F1FC-4AB1-BB16-57958733E6F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B9A01A5-F1FC-4AB1-BB16-57958733E6F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B9A01A5-F1FC-4AB1-BB16-57958733E6F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

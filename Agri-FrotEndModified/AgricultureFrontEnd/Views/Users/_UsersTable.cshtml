@@ -1,0 +1,27 @@
+@model List<UserReadVM>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td class="fw-semibold">@item.Name</td>
+        <td>@item.Email</td>
+        <td>
+            <span class="badge bg-success px-3 py-2">@item.Role.ToString()</span>
+        </td>
+        <td>
+            <div class="d-inline-flex gap-1">
+            <a href="javascript:void(0)"
+               class="btn btn-sm btn-outline-danger me-2"
+               onclick="deleteUser(@item.Id, '@item.Name')">
+                Delete
+            </a>
+            <a asp-controller="Users"
+               asp-action="ResetPassword"
+               asp-route-id="@item.Id"
+               class="btn btn-sm btn-outline-warning">
+                Reset Password
+            </a>
+            </div>
+        </td>
+    </tr>
+}

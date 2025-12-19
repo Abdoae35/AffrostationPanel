@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Abdo\\Desktop\\AgriFrontEnd\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9342729D-1DD6-4F28-AD00-6EF24BDCB3BA}|AgricultureFrontEnd\\AgricultureFrontEnd.csproj|c:\\users\\abdo\\desktop\\agrifrontend\\agriculturefrontend\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9342729D-1DD6-4F28-AD00-6EF24BDCB3BA}|AgricultureFrontEnd\\AgricultureFrontEnd.csproj|solutionrelative:agriculturefrontend\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9342729D-1DD6-4F28-AD00-6EF24BDCB3BA}|AgricultureFrontEnd\\AgricultureFrontEnd.csproj|c:\\users\\abdo\\desktop\\agrifrontend\\agriculturefrontend\\views\\showdata\\alllocations.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9342729D-1DD6-4F28-AD00-6EF24BDCB3BA}|AgricultureFrontEnd\\AgricultureFrontEnd.csproj|solutionrelative:agriculturefrontend\\views\\showdata\\alllocations.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Abdo\\Desktop\\AgriFrontEnd\\AgricultureFrontEnd\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "AgricultureFrontEnd\\Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Abdo\\Desktop\\AgriFrontEnd\\AgricultureFrontEnd\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "AgricultureFrontEnd\\Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-23T12:12:44.079Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AllLocations.cshtml",
+              "DocumentMoniker": "C:\\Users\\Abdo\\Desktop\\AgriFrontEnd\\AgricultureFrontEnd\\Views\\ShowData\\AllLocations.cshtml",
+              "RelativeDocumentMoniker": "AgricultureFrontEnd\\Views\\ShowData\\AllLocations.cshtml",
+              "ToolTip": "C:\\Users\\Abdo\\Desktop\\AgriFrontEnd\\AgricultureFrontEnd\\Views\\ShowData\\AllLocations.cshtml",
+              "RelativeToolTip": "AgricultureFrontEnd\\Views\\ShowData\\AllLocations.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-07-23T12:10:55.149Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

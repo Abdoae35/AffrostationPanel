@@ -1,0 +1,18 @@
+@model List<TreeTypeReadVM>
+
+@foreach (var item in Model)
+{
+    <tr id="row-@item.Id">
+        <td>
+            <span class="type-text">@item.Type</span>
+            <input type="text" class="form-control type-input d-none" value="@item.Type" />
+        </td>
+        <td>
+            <div class="d-inline-flex gap-1">
+                <button class="btn btn-sm btn-warning" onclick="editTreeType(@item.Id)">Edit</button>
+                <button class="btn btn-sm btn-success d-none" onclick="saveTreeType(@item.Id)">Save</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteTreeType(@item.Id, '@item.Type')">Delete</button>
+            </div>
+        </td>
+    </tr>
+}

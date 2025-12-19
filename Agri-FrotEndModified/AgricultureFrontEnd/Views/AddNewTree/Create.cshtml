@@ -1,0 +1,95 @@
+@model TreeAddVm
+
+@{
+    ViewBag.Title = "Add New Plant";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3" style="max-width: 600px; margin: auto;">
+        <div class="card-header text-white fw-bold text-center" style="background-color: #14ae64;">
+            🌱 Add New Plant
+        </div>
+        <div class="card-body p-4">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success text-center py-2">
+                    @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger text-center py-2">
+                    @TempData["Error"]
+                </div>
+            }
+
+            <form asp-action="Create" method="post" onsubmit="return validateForm();">
+                @Html.AntiForgeryToken()
+
+                <!-- Plant Name -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Plant Name</label>
+                    <input asp-for="Name" class="form-control" id="treeNameInput" placeholder="Enter plant name..." />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                    <span id="nameError" class="text-danger small" style="display:none;">Cannot be empty.</span>
+                </div>
+
+                <!-- Scientific Name -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Scientific Name</label>
+                    <input asp-for="ScientificName" class="form-control" id="scientification" placeholder="Enter scientific name..." />
+                    <span asp-validation-for="ScientificName" class="text-danger small"></span>
+                    <span id="scientificNameError" class="text-danger small" style="display:none;">Cannot be empty.</span>
+                </div>
+
+                <!-- Plant Type -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Select Plant Type</label>
+                    <select asp-for="TreeType" asp-items="ViewBag.TypeList" class="form-select" id="treeTypeSelect">
+                        <option value="">-- Please select an option --</option>
+                    </select>
+                    <span asp-validation-for="TreeType" class="text-danger small"></span>
+                    <span id="typeError" class="text-danger small" style="display:none;">You must select a Plant Type.</span>
+                </div>
+
+                <button type="submit" class="btn w-100 fw-bold text-white" style="background-color: #14ae64;">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        const treeName = document.getElementById('treeNameInput').value.trim();
+        const scientificName = document.getElementById('scientification').value.trim();
+        const treeType = document.getElementById('treeTypeSelect').value;
+
+        let isValid = true;
+
+        // Reset error messages
+        document.getElementById('nameError').style.display = 'none';
+        document.getElementById('scientificNameError').style.display = 'none';
+        document.getElementById('typeError').style.display = 'none';
+
+        if (treeName === "") {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (scientificName === "") {
+            document.getElementById('scientificNameError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (treeType === "") {
+            document.getElementById('typeError').style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+</script>

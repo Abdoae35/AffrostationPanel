@@ -1,0 +1,176 @@
+@model TreeTypePageVM
+
+@{
+    ViewBag.Title = "Add New Tree Type";
+    Layout = "_Layout";
+}
+
+<form id="treeForm" class="p-4 bg-light rounded shadow-sm"
+      style="max-width: 500px; margin: auto;">
+    @Html.AntiForgeryToken()
+
+    <h4 class="mb-4 text-center">Add New Plant Type</h4>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Plant Type Name</label>
+        <input asp-for="AddModel.Type" class="form-control" id="treeTypeInput" placeholder="Enter plant type name..." />
+        <span id="errorMsg" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100"
+            style="background-color: #14ae64; box-shadow: none;">
+        Submit
+    </button>
+</form>
+
+<br />
+
+<h3 class="mb-4 text-center">All Plant Types</h3>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle text-center shadow-sm">
+        <thead style="background-color: #14ae64; box-shadow: none;">
+            <tr style="color: white">
+                <th>Plant Type Name</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody id="treeTableBody">
+            @await Html.PartialAsync("_TreeTypeTable", Model.AllTypes)
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // 🔹 Handle Add
+    document.getElementById("treeForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("treeTypeInput").value.trim();
+        const errorSpan = document.getElementById("errorMsg");
+
+        if (name === "") {
+            errorSpan.textContent = "Plant Type Name cannot be empty.";
+            return;
+        } else {
+            errorSpan.textContent = "";
+        }
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch("/AddTreeType/Create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": token
+            },
+            body: JSON.stringify({
+                AddModel: { Type: name }
+            })
+        });
+
+        if (response.ok) {
+            const newBody = await response.text();
+            document.querySelector("#treeTableBody").innerHTML = newBody;
+            document.getElementById("treeTypeInput").value = "";
+        } else {
+            alert("Error adding tree type.");
+        }
+    });
+
+    // 🔹 Handle Delete — replace your existing deleteTreeType with this
+    async function deleteTreeType(id, name) {
+        if (!confirm(`Are you sure you want to delete: ${name}?`)) return;
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch(`/AddTreeType/Delete/${id}`, {
+            method: "DELETE",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        });
+
+        const contentType = (response.headers.get("content-type") || "").toLowerCase();
+
+        if (response.ok) {
+            // If backend returned JSON (e.g. { success, html, message })
+            if (contentType.includes("application/json")) {
+                const data = await response.json();
+                if (data.success) {
+                    if (data.html) {
+                        document.querySelector("#treeTableBody").innerHTML = data.html;
+                    } else {
+                        // Fallback: remove the row locally
+                        document.getElementById(`row-${id}`)?.remove();
+                    }
+                } else {
+                    alert(data.message || "Cannot delete this item.");
+                }
+                return;
+            }
+
+            // Otherwise assume HTML partial (or plain text message)
+            const text = await response.text();
+            // If returned HTML partial -> replace table body
+            if (text.trim().startsWith("<")) {
+                document.querySelector("#treeTableBody").innerHTML = text;
+            } else {
+                // Plain text (error message)
+                alert(text || "Deleted (no HTML returned).");
+            }
+        } else {
+            // Non-OK status (400/500 etc.) — show server message if available
+            const errText = await response.text();
+            try {
+                const errJson = JSON.parse(errText);
+                alert(errJson.message || errText || "Error deleting tree type.");
+            } catch {
+                alert(errText || "Error deleting tree type.");
+            }
+        }
+    }
+
+
+</script>
+<script>
+    // existing Add + Delete code here...
+
+    // 🔹 Enable editing
+    function editTreeType(id) {
+        const row = document.getElementById(`row-${id}`);
+        row.querySelector(".type-text").classList.add("d-none");
+        row.querySelector(".type-input").classList.remove("d-none");
+        row.querySelector(".btn-warning").classList.add("d-none"); // hide Edit
+        row.querySelector(".btn-success").classList.remove("d-none"); // show Save
+    }
+
+    // 🔹 Save edited value
+    async function saveTreeType(id) {
+        const row = document.getElementById(`row-${id}`);
+        const newValue = row.querySelector(".type-input").value.trim();
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        if (newValue === "") {
+            alert("Plant Type Name cannot be empty.");
+            return;
+        }
+
+        const response = await fetch("/AddTreeType/Update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": token
+            },
+            body: JSON.stringify({ Id: id, Type: newValue })
+        });
+
+        if (response.ok) {
+            const newBody = await response.text();
+            document.querySelector("#treeTableBody").innerHTML = newBody;
+        } else {
+            alert("Error updating plant type.");
+        }
+    }
+</script>
+

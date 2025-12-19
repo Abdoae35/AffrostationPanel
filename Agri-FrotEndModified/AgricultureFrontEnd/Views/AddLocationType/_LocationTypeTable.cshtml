@@ -1,0 +1,18 @@
+@model List<LocationTypeReadVm>
+
+@foreach (var item in Model)
+{
+    <tr id="row-@item.Id">
+        <td>
+            <span class="type-text">@item.LocationType</span>
+            <input type="text" class="form-control type-input d-none" value="@item.LocationType" />
+        </td>
+        <td>
+            <div class="d-inline-flex gap-1">
+                <button class="btn btn-sm btn-warning" onclick="editLocationType(@item.Id)">Edit</button>
+                <button class="btn btn-sm btn-success d-none" onclick="saveLocationType(@item.Id)">Save</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteType(@item.Id, '@item.LocationType')">Delete</button>
+            </div>
+        </td>
+    </tr>
+}

@@ -1,0 +1,43 @@
+@model List<AfforestationReadVM>
+
+@{
+    ViewBag.Title = "My Records (Last 30 Days)";
+    Layout = "_Layout";
+}
+
+<h3 class="mb-4 text-center">Your Planting Records (Last 30 Days)</h3>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center shadow-sm">
+        <strong>No records found</strong> in the last 30 days.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered align-middle text-center shadow-sm">
+            <thead style="background-color: #14ae64; box-shadow: none;">
+            <tr style="color: white">
+                <th>Date Planted</th>
+                <th>Tree Name</th>
+                <th>Location Name</th>
+                <th>Number</th>
+                <th>User Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DateOfPlanted.ToString("yyyy-MM-dd")</td>
+                    <td>@item.TreeName</td>
+                    <td>@item.LocationName</td>
+                    <td>@item.Number</td>
+                    <td>@item.UserName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

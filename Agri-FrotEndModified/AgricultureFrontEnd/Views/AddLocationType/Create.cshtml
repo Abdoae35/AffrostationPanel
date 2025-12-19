@@ -1,0 +1,153 @@
+@model LocationTypePageVM
+
+@{
+    ViewBag.Title = "Add New Location Type";
+    Layout = "_Layout";
+}
+
+<form id="locationForm" class="p-4 bg-light rounded shadow-sm"
+      style="max-width: 500px; margin: auto;">
+    @Html.AntiForgeryToken()
+
+    <h4 class="mb-4 text-center">Add New Location Type</h4>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Location Type Name</label>
+        <input asp-for="AddModel.LocationType" class="form-control" id="locationNameInput" placeholder="Enter location type name..." />
+        <span id="errorMsg" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100"
+            style="background-color: #14ae64; box-shadow: none;">
+        Submit
+    </button>
+</form>
+
+<br />
+
+<h3 class="mb-4 text-center">All Location Types</h3>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle text-center shadow-sm">
+        <thead style="background-color: #14ae64; box-shadow: none;">
+            <tr style="color: white">
+                <th>Name</th>
+                <th>Delete The Type</th>
+            </tr>
+        </thead>
+        <tbody id="locationTableBody">
+            @await Html.PartialAsync("_LocationTypeTable", Model.AllTypes)
+        </tbody>
+    </table>
+</div>
+
+<script>
+    //  Handle Add
+    document.getElementById("locationForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("locationNameInput").value.trim();
+        const errorSpan = document.getElementById("errorMsg");
+
+        if (name === "") {
+            errorSpan.textContent = "Location Type cannot be empty.";
+            return;
+        } else {
+            errorSpan.textContent = "";
+        }
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch("/AddLocationType/Create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": token
+            },
+            body: JSON.stringify({
+                AddModel: { LocationType: name }
+            })
+        });
+
+        if (response.ok) {
+            const newBody = await response.text();
+            document.querySelector("#locationTableBody").innerHTML = newBody;
+            document.getElementById("locationNameInput").value = "";
+        } else {
+            alert("Error adding location type.");
+        }
+    });
+
+    // 🔹 Handle Delete — same style as TreeType
+    async function deleteType(id, name) {
+        if (!confirm(`Are you sure you want to delete: ${name}?`)) return;
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch(`/AddLocationType/Delete/${id}`, {
+            method: "DELETE",
+            headers: { "RequestVerificationToken": token }
+        });
+
+        if (response.ok) {
+            const contentType = (response.headers.get("content-type") || "").toLowerCase();
+
+            if (contentType.includes("application/json")) {
+                // Backend returned JSON -> deletion failed
+                const data = await response.json();
+                alert(data.message || "❌ Cannot delete this item.");
+            } else {
+                // Backend returned HTML -> deletion succeeded
+                const html = await response.text();
+                document.querySelector("#locationTableBody").innerHTML = html;
+            }
+        } else {
+            const errText = await response.text();
+            alert(errText || "❌ Error deleting location type.");
+        }
+    }
+
+
+
+
+</script>
+
+<script>
+    // 🔹 Enable editing
+    function editLocationType(id) {
+        const row = document.getElementById(`row-${id}`);
+        row.querySelector(".type-text").classList.add("d-none");
+        row.querySelector(".type-input").classList.remove("d-none");
+        row.querySelector(".btn-warning").classList.add("d-none"); // hide Edit
+        row.querySelector(".btn-success").classList.remove("d-none"); // show Save
+    }
+
+    // 🔹 Save edited value
+    async function saveLocationType(id) {
+        const row = document.getElementById(`row-${id}`);
+        const newValue = row.querySelector(".type-input").value.trim();
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        if (newValue === "") {
+            alert("Location Type cannot be empty.");
+            return;
+        }
+
+        const response = await fetch("/AddLocationType/Update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "RequestVerificationToken": token
+            },
+            body: JSON.stringify({ Id: id, LocationType: newValue })
+        });
+
+        if (response.ok) {
+            const newBody = await response.text();
+            document.querySelector("#locationTableBody").innerHTML = newBody;
+        } else {
+            alert("Error updating location type.");
+        }
+    }
+
+</script>

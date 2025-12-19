@@ -1,0 +1,68 @@
+@model List<UserReadVM>
+@{
+ViewBag.Title = "Show All Users";
+Layout = "_Layout";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+<script>
+    alert("@TempData["SuccessMessage"]");
+</script>
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header text-white fw-bold" style="background-color: #14ae64;">
+            <h4 class="mb-0 text-center">All Users</h4>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+            <div class="alert alert-warning text-center">
+                🚨 No Users Found.
+            </div>
+            }
+            else
+            {
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle text-center shadow-sm">
+                    <thead class="table-success text-dark">
+                    <tr>
+                        <th class="py-3">Name</th>
+                        <th class="py-3">Email</th>
+                        <th class="py-3">Role</th>
+                        <th class="py-3">Manage User</th>
+                    </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    @await Html.PartialAsync("_UsersTable", Model)
+                    </tbody>
+                </table>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    async function deleteUser(id, name) {
+        if (!confirm(`Are you sure you want to delete the account: ${name}?`)) return;
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        const response = await fetch(`/Users/DeleteUser/${id}`, {
+            method: "DELETE",
+            headers: {
+                "RequestVerificationToken": token
+            }
+        });
+
+        if (response.ok) {
+            const newBody = await response.text();
+            document.querySelector("#usersTableBody").innerHTML = newBody;
+        } else {
+            alert("⚠️ User has related records. Please delete their records first!");
+        }
+    }
+</script>

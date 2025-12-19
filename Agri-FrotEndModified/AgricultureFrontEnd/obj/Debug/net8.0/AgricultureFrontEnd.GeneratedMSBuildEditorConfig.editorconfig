@@ -1,0 +1,125 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = AgricultureFrontEnd
+build_property.RootNamespace = AgricultureFrontEnd
+build_property.ProjectDir = /Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddLocationType/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkTG9jYXRpb25UeXBlL0NyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddLocationType/_LocationTypeTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkTG9jYXRpb25UeXBlL19Mb2NhdGlvblR5cGVUYWJsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddNewLocation/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkTmV3TG9jYXRpb24vQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddNewTree/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkTmV3VHJlZS9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddPlant/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkUGxhbnQvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddPlant/Success.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkUGxhbnQvU3VjY2Vzcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddTreeType/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkVHJlZVR5cGUvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/AddTreeType/_TreeTypeTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRkVHJlZVR5cGUvX1RyZWVUeXBlVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Afforestation/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWZmb3Jlc3RhdGlvbi9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Afforestation/Success.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWZmb3Jlc3RhdGlvbi9TdWNjZXNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Register/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVnaXN0ZXIvUmVnaXN0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Search/GetStatistics.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VhcmNoL0dldFN0YXRpc3RpY3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Search/SearchResults.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2VhcmNoL1NlYXJjaFJlc3VsdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/ShowData/AllLocations.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvd0RhdGEvQWxsTG9jYXRpb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/ShowData/AllTrees.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvd0RhdGEvQWxsVHJlZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/UserRecords/DataAdded.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlclJlY29yZHMvRGF0YUFkZGVkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Users/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlcnMvUmVzZXRQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Users/ShowUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlcnMvU2hvd1VzZXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Users/_UsersTable.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXNlcnMvX1VzZXJzVGFibGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-ugv8z4i8fi

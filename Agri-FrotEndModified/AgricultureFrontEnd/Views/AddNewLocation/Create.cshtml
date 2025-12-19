@@ -1,0 +1,78 @@
+@model LocationAddVm
+
+@{
+    ViewBag.Title = "Add New Location";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3" style="max-width: 600px; margin: auto;">
+        <div class="card-header text-white fw-bold text-center" style="background-color: #14ae64;">
+            📍 Add New Location
+        </div>
+        <div class="card-body p-4">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success text-center py-2">
+                    @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger text-center py-2">
+                    @TempData["Error"]
+                </div>
+            }
+            <form asp-action="Create" method="post" onsubmit="return validateForm();">
+                @Html.AntiForgeryToken()
+
+                <!-- Location Name -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Location Name</label>
+                    <input asp-for="Name" class="form-control" id="locationNameInput" placeholder="Enter location name..."/>
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                    <span id="nameError" class="text-danger small" style="display:none;">Cannot be empty.</span>
+                </div>
+
+                <!-- Location Type -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Select Location Type</label>
+                    <select asp-for="LocationType" asp-items="ViewBag.TypesList" class="form-select" id="locationTypeSelect">
+                        <option value="">-- Please select an option --</option>
+                    </select>
+                    <span asp-validation-for="LocationType" class="text-danger small"></span>
+                    <span id="typeError" class="text-danger small" style="display:none;">You must select a Location Type.</span>
+                </div>
+
+                <button type="submit" class="btn w-100 fw-bold text-white" style="background-color: #14ae64;">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        const locationName = document.getElementById('locationNameInput').value.trim();
+        const locationType = document.getElementById('locationTypeSelect').value;
+
+        let isValid = true;
+
+        // Reset errors
+        document.getElementById('nameError').style.display = 'none';
+        document.getElementById('typeError').style.display = 'none';
+
+        if (locationName === "") {
+            document.getElementById('nameError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (locationType === "") {
+            document.getElementById('typeError').style.display = 'block';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+</script>

@@ -1,0 +1,211 @@
+@model AgricultureFrontEnd.Models.Vm.CombinedReturns.TreeAfforstationVM
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-3" style="max-width: 750px; margin: auto;">
+        <div class="card-header text-white text-center fw-bold" style="background-color:#14ae64;">
+            Edit Afforestation Record
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" name="Id" value="@Model.AfforstationUpdateVm.Id" />
+                <input type="hidden" name="TreeTypeId" id="TreeTypeHidden" value="@Model.AfforstationUpdateVm.TreeTypeId" />
+                <input type="hidden" name="LocationTypeId" id="LocationTypeHidden" value="@Model.AfforstationUpdateVm.LocationTypeId" />
+                <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
+
+                <!-- ID -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Record ID</label>
+                    <input type="text" class="form-control bg-light" value="@Model.AfforstationUpdateVm.Id" readonly />
+                </div>
+
+                <!-- Date Planted -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Date Planted</label>
+                    <input type="date" class="form-control"
+                           name="DateOfPlanted"
+                           value="@(Model.AfforstationUpdateVm.DateOfPlanted.HasValue
+                           ? Model.AfforstationUpdateVm.DateOfPlanted.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd")
+                           : string.Empty)" />
+                </div>
+
+                <!-- Tree Type -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="TreeTypeSelect">Plant Type</label>
+                    <select id="TreeTypeSelect" class="form-select" required>
+                        <option value="">-- اختر نوع الشجرة --</option>
+                        @foreach (var item in Model.Types ?? new List<TreeTypeReadVM>())
+                        {
+                            <option value="@item.Id"
+                                    data-typeid="@item.Id"
+                                    data-name="@item.Type"
+                                    selected="@(item.Id == Model.AfforstationUpdateVm.TreeTypeId ? "selected" : null)">
+                                @item.Type
+                            </option>
+                        }
+                    </select>
+                    <div class="form-text text-danger d-none" id="TreeTypeError">Dropdown cannot be empty</div>
+                </div>
+
+                <!-- Tree -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="TreeSelect">Plant Name</label>
+                    <select id="TreeSelect" class="form-select" name="TreeNameId" required>
+                        <option value="">-- اختر الشجرة --</option>
+                        @foreach (var item in Model.Trees ?? new List<TreeReadVM>())
+                        {
+                            <option value="@item.Id"
+                                    data-typeid="@item.TypeId"
+                                    data-typename="@item.Type"
+                                    selected="@(item.Id == Model.AfforstationUpdateVm.TreeNameId ? "selected" : null)">
+                                @item.Name
+                            </option>
+                        }
+                    </select>
+                    <div class="form-text text-danger d-none" id="TreeError">Dropdown cannot be empty</div>
+                </div>
+
+                <!-- Location Type -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="LocationTypeSelect">Location Type</label>
+                    <select id="LocationTypeSelect" class="form-select" required>
+                        <option value="">-- اختر نوع الموقع --</option>
+                        @foreach (var item in Model.LocationTypes ?? new List<LocationTypeReadVm>())
+                        {
+                            <option value="@item.Id"
+                                    data-typeid="@item.Id"
+                                    data-name="@item.LocationType"
+                                    selected="@(item.Id == Model.AfforstationUpdateVm.LocationTypeId ? "selected" : null)">
+                                @item.LocationType
+                            </option>
+                        }
+                    </select>
+                    <div class="form-text text-danger d-none" id="LocationTypeError">Dropdown cannot be empty</div>
+                </div>
+
+                <!-- Location -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="LocationSelect">Location Name</label>
+                    <select id="LocationSelect" class="form-select" name="LocationId" required>
+                        <option value="">-- اختر الموقع --</option>
+                        @foreach (var item in Model.Locations ?? new List<LocationNameReadVM>())
+                        {
+                            <option value="@item.Id"
+                                    data-typeid="@item.LocationTypeId"
+                                    data-locationtype="@item.LocationType"
+                                    selected="@(item.Id == Model.AfforstationUpdateVm.LocationId ? "selected" : null)">
+                                @item.Name
+                            </option>
+                        }
+                    </select>
+                    <div class="form-text text-danger d-none" id="LocationError">Dropdown cannot be empty</div>
+                </div>
+
+                <!-- User Name -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">User Name</label>
+                    <input type="text" class="form-control bg-light" value="@Model.AfforstationUpdateVm.UserName" readonly />
+                </div>
+
+                <!-- Number -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Number</label>
+                    <input type="number" class="form-control" name="Number" value="@Model.AfforstationUpdateVm.Number" />
+                </div>
+
+                <!-- Submit -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success px-5 shadow-sm">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const treeSelect = document.getElementById('TreeSelect');
+    const treeTypeHidden = document.getElementById('TreeTypeHidden');
+    const treeTypeSelect = document.getElementById('TreeTypeSelect');
+
+    const locationSelect = document.getElementById('LocationSelect');
+    const locationTypeHidden = document.getElementById('LocationTypeHidden');
+    const locationTypeSelect = document.getElementById('LocationTypeSelect');
+
+    // Save original options for tree & location
+    const treeOptions = Array.from(treeSelect.querySelectorAll('option'));
+    const locationOptions = Array.from(locationSelect.querySelectorAll('option'));
+
+    function filterSelect(parentSelect, childSelect, dataAttr, allOptions, reset = false) {
+        const selectedName = parentSelect.options[parentSelect.selectedIndex]?.getAttribute('data-name') || '';
+
+        // Clear all except placeholder
+        childSelect.innerHTML = '<option value="">-- اختر --</option>';
+
+        // Add back only matching options
+        allOptions.forEach(opt => {
+            if (!opt.value) return; // skip placeholder
+            if (!selectedName || opt.getAttribute(dataAttr) === selectedName) {
+                childSelect.appendChild(opt.cloneNode(true));
+            }
+        });
+
+        if (reset) {
+            childSelect.value = "";
+        }
+    }
+
+    treeTypeSelect.addEventListener('change', function () {
+        filterSelect(treeTypeSelect, treeSelect, 'data-typename', treeOptions, true);
+        treeTypeHidden.value = treeTypeSelect.value;
+    });
+
+    treeSelect.addEventListener('change', function () {
+        const selectedOption = treeSelect.options[treeSelect.selectedIndex];
+        treeTypeHidden.value = selectedOption?.getAttribute('data-typeid') || '';
+    });
+
+    locationTypeSelect.addEventListener('change', function () {
+        filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions, true);
+        locationTypeHidden.value = locationTypeSelect.value;
+    });
+
+    locationSelect.addEventListener('change', function () {
+        const selectedOption = locationSelect.options[locationSelect.selectedIndex];
+        locationTypeHidden.value = selectedOption?.getAttribute('data-typeid') || '';
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        filterSelect(treeTypeSelect, treeSelect, 'data-typename', treeOptions);
+        filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions);
+    });
+
+    // Dropdown validation
+    document.querySelector("form").addEventListener("submit", function (e) {
+        let valid = true;
+
+        function checkSelect(id, errorId) {
+            const select = document.getElementById(id);
+            const error = document.getElementById(errorId);
+            if (!select.value) {
+                error.classList.remove("d-none");
+                valid = false;
+            } else {
+                error.classList.add("d-none");
+            }
+        }
+
+        checkSelect("TreeTypeSelect", "TreeTypeError");
+        checkSelect("TreeSelect", "TreeError");
+        checkSelect("LocationTypeSelect", "LocationTypeError");
+        checkSelect("LocationSelect", "LocationError");
+
+        if (!valid) {
+            e.preventDefault(); // stop form submission
+        }
+    });
+</script>
+}

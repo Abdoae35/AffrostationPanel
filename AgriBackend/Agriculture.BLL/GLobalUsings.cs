@@ -1,0 +1,16 @@
+global using Agriculiture.BLL.Dtos;
+global using Agriculture.DAL.Models;
+global using Agriculture.DAL.Repository.AfforestationAgricultureAchievementRepo;
+global using Microsoft.EntityFrameworkCore;
+global using Agriculture.DAL.Enums;
+global using Agriculiture.BLL.Dtos.UserDto;
+global using Agriculture.DAL.Repository;
+global using Microsoft.Extensions.Configuration;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using Agriculiture.BLL.Dtos.RegisterAndLoginDto;
+global using Microsoft.IdentityModel.Tokens;
+global using Agriculiture.BLL.Dtos.TreeTypeDto;
+global using Agriculture.DAL.Repository.TreeTypeRepo;
+global using Agriculiture.BLL.Dtos.LocationTypeDto;

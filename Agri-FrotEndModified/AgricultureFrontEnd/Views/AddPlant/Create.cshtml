@@ -1,0 +1,274 @@
+@model AgricultureFrontEnd.Models.Vm.AfforestationVM.AfforestationFormVM
+@using System.Security.Claims
+
+@{
+ViewBag.Title = "إضافة عملية تشجير";
+Layout = "_Layout";
+
+var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+var isAdmin = userRole == "Admin";
+var today = DateTime.Now.ToString("yyyy-MM-dd");
+var minDate = DateTime.Now.AddDays(-14).ToString("yyyy-MM-dd");
+
+// Build attributes for the date input
+var dateAttrs = new Dictionary<string, object>
+{
+["type"] = "date",
+["class"] = "form-control form-control-sm",
+["value"] = today // default today
+};
+if (!isAdmin)
+{
+dateAttrs["min"] = minDate;
+dateAttrs["max"] = today;
+}
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header text-white fw-bold text-center py-2" style="background-color:#14ae64; font-size: 1rem;">
+            🌱 إضافة عملية تشجير جديدة
+        </div>
+        <div class="card-body p-3">
+
+            @if (TempData["Success"] != null)
+            {
+            <div class="alert alert-success text-center py-1">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+            <div class="alert alert-danger text-center py-1">@TempData["Error"]</div>
+            }
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Tree Type -->
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small">نوع النبات</label>
+                    <select id="treeTypeDropdown" class="form-select form-select-sm" required>
+                        <option value="">اختر نوع النبات</option>
+                        @if (Model.TreeTypes != null)
+                        {
+                        foreach (var type in Model.TreeTypes)
+                        {
+                        <option value="@type">@type</option>
+                        }
+                        }
+                    </select>
+                    <span class="text-danger small" data-valmsg-for="TreeType" data-valmsg-replace="true"></span>
+                </div>
+
+                <!-- Tree Name -->
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small">اسم النبات</label>
+                    <select asp-for="TreeNameId" class="form-select form-select-sm" id="treeDropdown">
+                        <option value="">اختر اسم النبات</option>
+                        @if (Model.TreeNames != null)
+                        {
+                        foreach (var tree in Model.TreeNames)
+                        {
+                        <option value="@tree.Id" data-type="@tree.Type">@tree.Name</option>
+                        }
+                        }
+                    </select>
+                    <span asp-validation-for="TreeNameId" class="text-danger small"></span>
+                </div>
+
+                <!-- Location Type -->
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small">نوع الموقع</label>
+                    <select id="locationTypeDropdown" class="form-select form-select-sm" required>
+                        <option value="">اختر نوع الموقع</option>
+                        @if (Model.LocationTypes != null)
+                        {
+                        foreach (var type in Model.LocationTypes)
+                        {
+                        <option value="@type">@type</option>
+                        }
+                        }
+                    </select>
+                    <span class="text-danger small" data-valmsg-for="LocationType" data-valmsg-replace="true"></span>
+                </div>
+
+                <!-- Location Name -->
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small">موقع الزراعة</label>
+                    <select asp-for="LocationNameId" class="form-select form-select-sm" id="locationDropdown">
+                        <option value="">اختر العنوان</option>
+                        @if (Model.LocationNames != null)
+                        {
+                        foreach (var loc in Model.LocationNames)
+                        {
+                        <option value="@loc.Id" data-type="@loc.LocationType">@loc.Name</option>
+                        }
+                        }
+                    </select>
+                    <span asp-validation-for="LocationNameId" class="text-danger small"></span>
+                </div>
+
+                <!-- Number of Trees -->
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small">عدد النباتات</label>
+                    <input asp-for="Number" type="number" class="form-control form-control-sm" />
+                    <span asp-validation-for="Number" class="text-danger small"></span>
+                </div>
+
+               
+                <!-- Planting Date -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">
+                        @(isAdmin ? "تاريخ الزراعة" : "تاريخ الزراعة (اخر اسبوعين فقط)")
+                    </label>
+
+                    @if (isAdmin)
+                    {
+                        <!-- Admin can choose any date -->
+                        <input asp-for="DateOfPlanted"
+                               type="date"
+                               class="form-control form-control-sm"
+                               value="@Model.DateOfPlanted.ToString("yyyy-MM-dd")" />
+                    }
+                    else
+                    {
+                        <!-- User: restrict last 14 days -->
+                        <input asp-for="DateOfPlanted"
+                               type="date"
+                               class="form-control form-control-sm"
+                               min="@minDate"
+                               max="@today"
+                               value="@Model.DateOfPlanted.ToString("yyyy-MM-dd")" />
+                    }
+
+                    <span asp-validation-for="DateOfPlanted" class="text-danger small"></span>
+                </div>
+
+
+
+
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-sm text-white fw-bold" style="background-color:#14ae64;">
+                        ➕ إضافة العملية
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+    // All Options for both location and plantType
+    const treeOptions = $("#treeDropdown option").clone();
+    const locationOptions = $("#locationDropdown option").clone();
+
+    // Filter Based on Plant Type
+    $("#treeTypeDropdown").on("change", function () {
+        let selectedType = $(this).val();
+        let $treeDropdown = $("#treeDropdown");
+
+        $treeDropdown.empty().append('<option value="">اختر اسم النبات</option>');
+
+        treeOptions.each(function () {
+            if (!$(this).val()) return; // skip default
+            if ($(this).data("type") === selectedType) {
+                $treeDropdown.append($(this).clone());
+            }
+        });
+    });
+
+    // Filter Based on Location Type
+    $("#locationTypeDropdown").on("change", function () {
+        let selectedType = $(this).val();
+        let $locationDropdown = $("#locationDropdown");
+
+        $locationDropdown.empty().append('<option value="">اختر العنوان</option>');
+
+        locationOptions.each(function () {
+            if (!$(this).val()) return;
+            if ($(this).data("type") === selectedType) {
+                $locationDropdown.append($(this).clone());
+            }
+        });
+    });
+
+
+    // Client-side required validation for simple (non-asp-for) dropdowns
+    $("form").on("submit", function () {
+        let valid = true;
+
+        if (!$("#treeTypeDropdown").val()) {
+            $("[data-valmsg-for='TreeType']").text("اختيار نوع النبات مطلوب");
+            valid = false;
+        } else {
+            $("[data-valmsg-for='TreeType']").text("");
+        }
+
+        if (!$("#locationTypeDropdown").val()) {
+            $("[data-valmsg-for='LocationType']").text("اختيار نوع الموقع مطلوب");
+            valid = false;
+        } else {
+            $("[data-valmsg-for='LocationType']").text("");
+        }
+
+        return valid;
+    });
+    
+    
+</script>
+<script>
+    
+    const treeTypeSelect = document.getElementById('TreeTypeSelect');
+    const treeSelect = document.getElementById('TreeSelect');
+    const treeOptions = Array.from(treeSelect.querySelectorAll('option'));
+
+    const locationTypeSelect = document.getElementById('LocationTypeSelect');
+    const locationSelect = document.getElementById('LocationSelect');
+    const locationOptions = Array.from(locationSelect.querySelectorAll('option'));
+
+    function filterSelect(parentSelect, childSelect, dataAttr, allOptions) {
+        const selectedValue = parentSelect.value;
+        childSelect.innerHTML = '<option value="">-- اختر --</option>';
+        allOptions.forEach(opt => {
+            if (!opt.value) return;
+            if (!selectedValue || opt.getAttribute(dataAttr) === selectedValue) {
+                childSelect.appendChild(opt.cloneNode(true));
+            }
+        });
+        childSelect.value = "";
+    }
+
+    treeTypeSelect.addEventListener('change', () => {
+        filterSelect(treeTypeSelect, treeSelect, 'data-typename', treeOptions);
+    });
+
+    locationTypeSelect.addEventListener('change', () => {
+        filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions);
+    });
+
+    // Validation before submit
+    document.querySelector("form").addEventListener("submit", function (e) {
+        let valid = true;
+
+        if (!treeTypeSelect.value) {
+            document.getElementById("TreeTypeError").classList.remove("d-none");
+            valid = false;
+        } else {
+            document.getElementById("TreeTypeError").classList.add("d-none");
+        }
+
+        if (!locationTypeSelect.value) {
+            document.getElementById("LocationTypeError").classList.remove("d-none");
+            valid = false;
+        } else {
+            document.getElementById("LocationTypeError").classList.add("d-none");
+        }
+
+        if (!valid) e.preventDefault();
+    });
+</script>
+}
