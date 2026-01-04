@@ -1,79 +1,603 @@
 @model RegisterVM
 
-<div class="d-flex justify-content-center mt-5">
-    <div class="p-5 bg-white rounded-3 shadow-lg" style="width: 100%; max-width: 420px;">
-        <h3 class="mb-4 text-center fw-bold text-success">إنشاء حساب جديد</h3>
-        @if (TempData["Success"] != null)
-        {
-            <div class="alert alert-success text-center py-2">
-                @TempData["Success"]
-            </div>
-        }
-        @if (TempData["Error"] != null)
-        {
-            <div class="alert alert-danger text-center py-2">
-                @TempData["Error"]
-            </div>
-        }
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h2 class="register-title">إنشاء حساب جديد</h2>
+            <p class="register-subtitle">Create a new account to join the afforestation system</p>
+        </div>
 
-        <form method="post" onsubmit="return validateRegisterForm();">
-            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
-
-            <!-- Name -->
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="fw-semibold"></label>
-                <input asp-for="Name" type="text" class="form-control rounded-2" placeholder="Enter your name..." id="nameInput"/>
-                <span asp-validation-for="Name" class="text-danger small"></span>
-            </div>
-
-            <!-- Email -->
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="fw-semibold"></label>
-                <input asp-for="Email" type="email" class="form-control rounded-2" placeholder="Enter your email..." id="emailInput"/>
-                <span asp-validation-for="Email" class="text-danger small"></span>
-            </div>
-
-            <!-- Password -->
-            <div class="form-group mb-3">
-                <label asp-for="Password" class="fw-semibold"></label>
-                <div class="input-group">
-                    <input asp-for="Password" type="password" class="form-control rounded-start-2" id="passwordInput" placeholder="Enter your password..."/>
-                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-end-2" onclick="togglePassword()" tabindex="-1">
-                        Show
-                    </button>
+        <div class="register-body">
+            <!-- Success Message -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="register-alert register-alert-success">
+                    <div class="register-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="register-alert-content">
+                        <strong class="register-alert-title">Success!</strong>
+                        <p class="register-alert-message">@TempData["Success"]</p>
+                    </div>
                 </div>
-                <span asp-validation-for="Password" class="text-danger small"></span>
-            </div>
+            }
 
-            <!-- Role -->
-            <div class="form-group mb-4">
-                <label asp-for="Role" class="fw-semibold"></label>
-                <select asp-for="Role" asp-items="Html.GetEnumSelectList<Roles>()" class="form-select rounded-2" id="roleSelect">
-                    <option value="">Select Role</option> 
-                </select>
-                <span asp-validation-for="Role" class="text-danger small"></span>
-            </div>
+            <!-- Error Message -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="register-alert register-alert-error">
+                    <div class="register-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="register-alert-content">
+                        <strong class="register-alert-title">Error!</strong>
+                        <p class="register-alert-message">@TempData["Error"]</p>
+                    </div>
+                </div>
+            }
 
-            <!-- Submit -->
-            <button type="submit" class="btn w-100 py-2 fw-semibold text-white rounded-2" style="background-color: #14ae64;">
-                Register
-            </button>
-        </form>
+            <form method="post" onsubmit="return validateRegisterForm();" class="register-form">
+                <div asp-validation-summary="All" class="register-validation-summary"></div>
 
-        @if (ViewBag.Message != null)
-        {
-            <p class="text-danger mt-3 text-center fw-semibold">@ViewBag.Message</p>
-        }
+                <!-- Name -->
+                <div class="register-form-group">
+                    <label asp-for="Name" class="register-label">Name</label>
+                    <input asp-for="Name" 
+                           type="text" 
+                           class="register-input" 
+                           placeholder="Enter your name..." 
+                           id="nameInput"/>
+                    <span asp-validation-for="Name" class="register-validation-error"></span>
+                    <div id="nameError" class="register-error-message">
+                        <svg class="register-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Name cannot be empty.</span>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="register-form-group">
+                    <label asp-for="Email" class="register-label">Email Address</label>
+                    <input asp-for="Email" 
+                           type="email" 
+                           class="register-input" 
+                           placeholder="Enter your email..." 
+                           id="emailInput"/>
+                    <span asp-validation-for="Email" class="register-validation-error"></span>
+                    <div id="emailError" class="register-error-message">
+                        <svg class="register-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Email cannot be empty.</span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="register-form-group">
+                    <label asp-for="Password" class="register-label">Password</label>
+                    <div class="register-input-wrapper">
+                        <input asp-for="Password" 
+                               type="password" 
+                               class="register-input register-input-password" 
+                               id="passwordInput" 
+                               placeholder="Enter your password..."/>
+                        <button type="button" class="register-toggle-password" onclick="toggleRegisterPassword()" tabindex="-1">
+                            <span id="registerPasswordToggleIcon">Show</span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="register-validation-error"></span>
+                    <div id="passwordError" class="register-error-message">
+                        <svg class="register-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Password cannot be empty.</span>
+                    </div>
+                </div>
+
+                <!-- Role -->
+                <div class="register-form-group">
+                    <label asp-for="Role" class="register-label">Select Role</label>
+                    <div class="register-select-wrapper">
+                        <select asp-for="Role" 
+                                asp-items="Html.GetEnumSelectList<Roles>()" 
+                                class="register-select" 
+                                id="roleSelect">
+                            <option value="">Select Role</option>
+                        </select>
+                        <div class="register-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Role" class="register-validation-error"></span>
+                    <div id="roleError" class="register-error-message">
+                        <svg class="register-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>You must select a role.</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="register-submit-btn">
+                    <span>Register Account</span>
+                    <svg class="register-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                </button>
+            </form>
+
+            @if (ViewBag.Message != null)
+            {
+                <div class="register-viewbag-error">
+                    <svg class="register-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <span>@ViewBag.Message</span>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+<style>
+    .register-container {
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .register-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        overflow: hidden;
+        animation: registerSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes registerSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .register-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .register-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .register-subtitle {
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.95;
+    }
+
+    .register-body {
+        padding: 2.5rem;
+    }
+
+    /* Alert Messages */
+    .register-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        animation: registerAlertSlide 0.5s ease-out;
+    }
+
+    @@keyframes registerAlertSlide {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .register-alert-success {
+        background: #e8f5e9;
+        border: 2px solid #81c784;
+    }
+
+    .register-alert-error {
+        background: #ffebee;
+        border: 2px solid #ef5350;
+    }
+
+    .register-alert-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    .register-alert-success .register-alert-icon {
+        color: #66bb6a;
+    }
+
+    .register-alert-error .register-alert-icon {
+        color: #ef5350;
+    }
+
+    .register-alert-icon svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    .register-alert-content {
+        flex: 1;
+    }
+
+    .register-alert-title {
+        display: block;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .register-alert-success .register-alert-title {
+        color: #2d5016;
+    }
+
+    .register-alert-error .register-alert-title {
+        color: #c62828;
+    }
+
+    .register-alert-message {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .register-alert-success .register-alert-message {
+        color: #4a7c3e;
+    }
+
+    .register-alert-error .register-alert-message {
+        color: #d32f2f;
+    }
+
+    /* Form */
+    .register-form {
+        margin-top: 0;
+    }
+
+    .register-validation-summary {
+        color: #ef5350;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .register-form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .register-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .register-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .register-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    /* Password Input */
+    .register-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .register-input-password {
+        padding-right: 4rem;
+    }
+
+    .register-toggle-password {
+        position: absolute;
+        right: 0.75rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85rem;
+        padding: 0.5rem;
+        transition: all 0.2s ease;
+        z-index: 2;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .register-toggle-password:hover {
+        color: #2d5016;
+    }
+
+    .register-toggle-password:focus {
+        outline: none;
+    }
+
+    /* Select Dropdown */
+    .register-select-wrapper {
+        position: relative;
+    }
+
+    .register-select {
+        width: 100%;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .register-select:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .register-select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #7a9971;
+        pointer-events: none;
+    }
+
+    .register-select-arrow svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    /* Error Messages */
+    .register-validation-error {
+        display: block;
+        color: #ef5350;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .register-error-message {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 8px;
+        color: #d32f2f;
+        font-size: 0.875rem;
+        font-weight: 500;
+        animation: registerErrorShake 0.5s ease;
+    }
+
+    @@keyframes registerErrorShake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-5px);
+        }
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    .register-error-message.show {
+        display: flex;
+    }
+
+    .register-error-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        stroke-width: 2.5;
+    }
+
+    /* ViewBag Error */
+    .register-viewbag-error {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 0.75rem 1rem;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 8px;
+        color: #d32f2f;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    /* Submit Button */
+    .register-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .register-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .register-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .register-btn-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .register-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .register-title {
+            font-size: 1.5rem;
+        }
+
+        .register-subtitle {
+            font-size: 0.95rem;
+        }
+
+        .register-form-group {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .register-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .register-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .register-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .register-title {
+            font-size: 1.35rem;
+        }
+
+        .register-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .register-input,
+        .register-select {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .register-select {
+            padding-right: 2.25rem;
+        }
+
+        .register-input-password {
+            padding-right: 3.5rem;
+        }
+
+        .register-alert {
+            padding: 0.875rem 1rem;
+        }
+
+        .register-alert-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .register-submit-btn {
+            padding: 0.875rem;
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        .register-container {
+            padding: 0.75rem 0.25rem;
+        }
+
+        .register-header {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .register-body {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .register-input,
+        .register-select {
+            font-size: 0.9rem;
+            padding: 0.65rem 0.75rem;
+        }
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        function togglePassword() {
+        function toggleRegisterPassword() {
             const passwordInput = document.getElementById('passwordInput');
-            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+            const toggleIcon = document.getElementById('registerPasswordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'Hide';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'Show';
+            }
         }
 
         function validateRegisterForm() {
@@ -82,27 +606,90 @@
             const password = document.getElementById('passwordInput').value.trim();
             const role = document.getElementById('roleSelect').value;
 
+            let isValid = true;
+
+            // Get error message elements
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const roleError = document.getElementById('roleError');
+
+            // Reset errors
+            nameError.classList.remove('show');
+            emailError.classList.remove('show');
+            passwordError.classList.remove('show');
+            roleError.classList.remove('show');
+
+            // Validate name
             if (name === "") {
-                alert("Name cannot be empty.");
-                return false;
+                nameError.classList.add('show');
+                isValid = false;
             }
 
+            // Validate email
             if (email === "") {
-                alert("Email cannot be empty.");
-                return false;
+                emailError.classList.add('show');
+                isValid = false;
             }
 
+            // Validate password
             if (password === "") {
-                alert("Password cannot be empty.");
-                return false;
+                passwordError.classList.add('show');
+                isValid = false;
             }
 
+            // Validate role
             if (role === "") {
-                alert("You must select a Role.");
-                return false;
+                roleError.classList.add('show');
+                isValid = false;
             }
 
-            return true;
+            return isValid;
         }
+
+        // Remove error messages when user starts typing/selecting
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.getElementById('nameInput');
+            const emailInput = document.getElementById('emailInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const roleSelect = document.getElementById('roleSelect');
+            
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const roleError = document.getElementById('roleError');
+
+            if (nameInput) {
+                nameInput.addEventListener('input', function() {
+                    if (this.value.trim() !== '') {
+                        nameError.classList.remove('show');
+                    }
+                });
+            }
+
+            if (emailInput) {
+                emailInput.addEventListener('input', function() {
+                    if (this.value.trim() !== '') {
+                        emailError.classList.remove('show');
+                    }
+                });
+            }
+
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    if (this.value.trim() !== '') {
+                        passwordError.classList.remove('show');
+                    }
+                });
+            }
+
+            if (roleSelect) {
+                roleSelect.addEventListener('change', function() {
+                    if (this.value !== '') {
+                        roleError.classList.remove('show');
+                    }
+                });
+            }
+        });
     </script>
 }

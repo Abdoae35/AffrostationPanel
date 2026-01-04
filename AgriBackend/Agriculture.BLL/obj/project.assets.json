@@ -2729,11 +2729,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj",
+      "projectUniqueName": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj",
       "projectName": "Agriculture.BLL",
-      "projectPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj",
+      "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj",
       "packagesPath": "/Users/macbookpro/.nuget/packages/",
-      "outputPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.BLL/obj/",
+      "outputPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
@@ -2749,8 +2749,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {
-              "projectPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj"
+            "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {
+              "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj"
             }
           }
         }

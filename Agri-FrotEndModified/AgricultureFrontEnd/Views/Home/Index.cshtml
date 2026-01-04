@@ -1,123 +1,561 @@
-﻿<h2 class="text-center mt-4">Welcome!</h2>
-
-@if (User.Identity != null && !User.Identity.IsAuthenticated)
-{
-    <div class="alert alert-info text-center mt-4">
-        Please <a asp-controller="Account" asp-action="Login" class="fw-bold">log in</a>.
-    </div>
-}
-else
-{
-    <div class="text-center mt-3">
-        <p>You are logged in as <b>@User.Identity?.Name</b>.</p>
-        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm mt-2">Logout</a>
-    </div>
-
-    @if (User.IsInRole("Admin"))
+﻿<div class="home-container">
+    @if (User.Identity != null && !User.Identity.IsAuthenticated)
     {
-        <div class="container mt-5">
-    <h3 class="text-center mb-4"> Admin Panel</h3>
-    <p class="text-center text-muted">Only visible to Admins.</p>
+        <div class="home-hero-section">
+            <div class="home-hero-content">
+                <h1 class="home-hero-title">Welcome to Afforestation Panel</h1>
+                <p class="home-hero-subtitle">Join us in making the world greener, one tree at a time</p>
+                <a asp-controller="Account" asp-action="Login" class="home-hero-btn">
+                    Get Started
+                </a>
+            </div>
+            <div class="home-hero-decoration"></div>
+        </div>
+    }
+    else
+    {
+        <div class="home-welcome-banner">
+            <div class="home-welcome-content">
+                <h2 class="home-welcome-title">Welcome back, <span class="home-username">@User.Identity?.Name</span></h2>
+                <p class="home-welcome-text">Ready to make a difference today?</p>
+            </div>
+            <a asp-controller="Account" asp-action="Logout" class="home-logout-link">Logout</a>
+        </div>
 
-    <div class="row g-4">
-        <!-- Column for adding types -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-header text-center fw-bold" style="background-color:white; color:#14ae64;">
-                    اضافة انواع
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="home-dashboard">
+                <div class="home-section-header">
+                    <h3 class="home-section-title">Admin Dashboard</h3>
+                    <p class="home-section-subtitle">Manage your afforestation system efficiently</p>
                 </div>
-                <div class="card-body d-flex flex-column gap-2">
-                    <a asp-controller="AddTreeType" asp-action="Create" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة نوع نبات جديد
+
+                <div class="home-admin-grid">
+                    <!-- Add Types Section -->
+                    <div class="home-section-card">
+                        <div class="home-card-icon-wrapper">
+                            <svg class="home-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-card-title">اضافة انواع</h4>
+                        <div class="home-card-links">
+                            <a asp-controller="AddTreeType" asp-action="Create" class="home-link-item">
+                                <span class="home-link-text">اضافة نوع نبات جديد</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="AddLocationType" asp-action="Create" class="home-link-item">
+                                <span class="home-link-text">اضافة نوع موقع جديد</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Add Items Section -->
+                    <div class="home-section-card">
+                        <div class="home-card-icon-wrapper">
+                            <svg class="home-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-card-title">إضافة عناصر</h4>
+                        <div class="home-card-links">
+                            <a asp-controller="AddPlant" asp-action="Create" class="home-link-item">
+                                <span class="home-link-text">اضافة عملية تشجير</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="AddNewTree" asp-action="Create" class="home-link-item">
+                                <span class="home-link-text">اضافة نبات</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="AddNewLocation" asp-action="Create" class="home-link-item">
+                                <span class="home-link-text">اضافة الموقع</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- User Management Section -->
+                    <div class="home-section-card">
+                        <div class="home-card-icon-wrapper">
+                            <svg class="home-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-card-title">إدارة المستخدمين</h4>
+                        <div class="home-card-links">
+                            <a asp-controller="Register" asp-action="Register" class="home-link-item">
+                                <span class="home-link-text">اضافة مستخدم</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="Users" asp-action="ShowUsers" class="home-link-item">
+                                <span class="home-link-text">اظهار جميع المستخدمين</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Search and Display Section -->
+                    <div class="home-section-card">
+                        <div class="home-card-icon-wrapper">
+                            <svg class="home-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-card-title">بحث و عرض البيانات</h4>
+                        <div class="home-card-links">
+                            <a asp-controller="Search" asp-action="GetStatistics" class="home-link-item">
+                                <span class="home-link-text">بحث</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="ShowData" asp-action="AllTrees" class="home-link-item">
+                                <span class="home-link-text">اظهار جميع النباتات</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                            <a asp-controller="ShowData" asp-action="AllLocations" class="home-link-item">
+                                <span class="home-link-text">اظهار جميع المواقع</span>
+                                <span class="home-link-arrow">→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (User.IsInRole("User"))
+        {
+            <div class="home-dashboard">
+                <div class="home-section-header">
+                    <h3 class="home-section-title">User Dashboard</h3>
+                    <p class="home-section-subtitle">Track and manage your planting activities</p>
+                </div>
+
+                <div class="home-user-grid">
+                    <a asp-controller="AddPlant" asp-action="Create" class="home-feature-card">
+                        <div class="home-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-feature-title">اضافة عملية تشجير</h4>
+                        <p class="home-feature-description">Add a new planting operation</p>
                     </a>
-                    <a asp-controller="AddLocationType" asp-action="Create" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة نوع موقع جديد
+
+                    <a asp-controller="UserRecords" asp-action="DataAdded" class="home-feature-card">
+                        <div class="home-feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                        </div>
+                        <h4 class="home-feature-title">البينات المضافة</h4>
+                        <p class="home-feature-description">View your added data</p>
                     </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Column for adding items -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-header text-center fw-bold" style="background-color:white; color:#14ae64;">
-                    إضافة عناصر
+        }
+        else if (User.IsInRole(nameof(Roles.Viewer)))
+        {
+            <div class="home-dashboard">
+                <div class="home-section-header">
+                    <h3 class="home-section-title">Viewer Dashboard</h3>
+                    <p class="home-section-subtitle">Explore afforestation data and statistics</p>
                 </div>
-                <div class="card-body d-flex flex-column gap-2">
-                    <a asp-controller="AddPlant" asp-action="Create" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة عملية تشجير
-                    </a>
-                    <a asp-controller="AddNewTree" asp-action="Create" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة نبات
-                    </a>
-                    <a asp-controller="AddNewLocation" asp-action="Create" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة الموقع
+
+                <div class="home-viewer-actions">
+                    <a asp-controller="Search" asp-action="GetStatistics" class="home-primary-action">
+                        <svg class="home-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <span class="home-action-text">بحث</span>
                     </a>
                 </div>
             </div>
-        </div>
-
-        <!-- Column for user management -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-header text-center fw-bold" style="background-color:white; color:#14ae64;">
-                    إدارة المستخدمين
-                </div>
-                <div class="card-body d-flex flex-column gap-2">
-                    <a asp-controller="Register" asp-action="Register" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اضافة مستخدم
-                    </a>
-                    <a asp-controller="Users" asp-action="ShowUsers" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اظهار جميع المستخدمين
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Column for searching and displaying data -->
-        <div class="col-md-6 col-lg-3">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-header text-center fw-bold" style="background-color:white; color:#14ae64;">
-                    بحث و عرض البيانات
-                </div>
-                <div class="card-body d-flex flex-column gap-2">
-                    <a asp-controller="Search" asp-action="GetStatistics" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         بحث
-                    </a>
-                    <a asp-controller="ShowData" asp-action="AllTrees" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اظهار جميع النباتات
-                    </a>
-                    <a asp-controller="ShowData" asp-action="AllLocations" class="btn w-100 text-white" style="background-color:#14ae64;">
-                         اظهار جميع المواقع
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+        }
+    }
 </div>
 
+<style>
+    .home-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
     }
-    else if (User.IsInRole("User"))
-    {
-        <div class="container mt-5 text-center">
-            <h3 class="mb-4">👤 User Dashboard</h3>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a asp-controller="AddPlant" asp-action="Create" class="btn text-white" style="background-color:#14ae64;">
-                     اضافة عملية تشجير
-                </a>
-                <a asp-controller="UserRecords" asp-action="DataAdded" class="btn text-white" style="background-color:#14ae64;">
-                     البينات المضافة
-                </a>
-            </div>
-        </div>
+
+    /* Hero Section for Non-Authenticated Users */
+    .home-hero-section {
+        position: relative;
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 50%, #f1f8e9 100%);
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 2rem;
     }
-    else if (User.IsInRole(nameof(Roles.Viewer)))
-    {
-        <div class="container mt-5 text-center">
-            <h3 class="mb-4">👀 Viewer Dashboard</h3>
-            <a asp-controller="Search" asp-action="GetStatistics" class="btn text-white" style="background-color:#14ae64;">
-                🔍 بحث
-            </a>
-        </div>
+
+    .home-hero-decoration {
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(139, 195, 74, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
     }
-}
+
+    .home-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d5016;
+        margin-bottom: 1rem;
+        animation: homeSlideUp 0.8s ease-out;
+    }
+
+    .home-hero-subtitle {
+        font-size: 1.2rem;
+        color: #5d7c50;
+        margin-bottom: 2rem;
+        animation: homeSlideUp 1s ease-out;
+    }
+
+    .home-hero-btn {
+        display: inline-block;
+        padding: 1rem 3rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+        transition: all 0.3s ease;
+        animation: homeSlideUp 1.2s ease-out;
+    }
+
+    .home-hero-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4);
+        color: white;
+    }
+
+    @@keyframes homeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Welcome Banner */
+    .home-welcome-banner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 100%);
+        border-radius: 16px;
+        margin-bottom: 3rem;
+        border-left: 5px solid #66bb6a;
+        animation: homeSlideUp 0.6s ease-out;
+    }
+
+    .home-welcome-content {
+        flex: 1;
+    }
+
+    .home-welcome-title {
+        font-size: 1.75rem;
+        color: #2d5016;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .home-username {
+        color: #66bb6a;
+    }
+
+    .home-welcome-text {
+        color: #5d7c50;
+        margin: 0;
+        font-size: 1.05rem;
+    }
+
+    .home-logout-link {
+        padding: 0.625rem 1.5rem;
+        background: white;
+        color: #e57373;
+        border: 2px solid #e57373;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .home-logout-link:hover {
+        background: #e57373;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(229, 115, 115, 0.3);
+    }
+
+    /* Dashboard Section */
+    .home-dashboard {
+        animation: homeSlideUp 0.8s ease-out;
+    }
+
+    .home-section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .home-section-title {
+        font-size: 2rem;
+        color: #2d5016;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .home-section-subtitle {
+        color: #7a9971;
+        font-size: 1.05rem;
+    }
+
+    /* Admin Grid */
+    .home-admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .home-section-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .home-section-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(45, 80, 22, 0.12);
+        border-color: #a5d6a7;
+    }
+
+    .home-card-icon-wrapper {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .home-card-icon {
+        width: 28px;
+        height: 28px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .home-card-title {
+        font-size: 1.25rem;
+        color: #2d5016;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .home-card-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .home-link-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.875rem 1rem;
+        background: #f8fdf9;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #4a7c3e;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid #e8f5e9;
+    }
+
+    .home-link-item:hover {
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        transform: translateX(5px);
+        border-color: #a5d6a7;
+        color: #2d5016;
+    }
+
+    .home-link-text {
+        flex: 1;
+    }
+
+    .home-link-arrow {
+        color: #66bb6a;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .home-link-item:hover .home-link-arrow {
+        transform: translateX(5px);
+    }
+
+    /* User Grid */
+    .home-user-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .home-feature-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .home-feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(45, 80, 22, 0.15);
+        border-color: #a5d6a7;
+    }
+
+    .home-feature-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .home-feature-icon svg {
+        width: 32px;
+        height: 32px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .home-feature-title {
+        font-size: 1.25rem;
+        color: #2d5016;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .home-feature-description {
+        color: #7a9971;
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Viewer Actions */
+    .home-viewer-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .home-primary-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem 3rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.15rem;
+        box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .home-primary-action:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(102, 187, 106, 0.4);
+        color: white;
+    }
+
+    .home-action-icon {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2.5;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .home-hero-title {
+            font-size: 2rem;
+        }
+
+        .home-hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .home-welcome-banner {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .home-welcome-title {
+            font-size: 1.5rem;
+        }
+
+        .home-section-title {
+            font-size: 1.5rem;
+        }
+
+        .home-admin-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .home-user-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .home-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .home-hero-section {
+            padding: 3rem 1.5rem;
+        }
+
+        .home-section-card {
+            padding: 1.5rem;
+        }
+
+        .home-feature-card {
+            padding: 2rem;
+        }
+    }
+</style>

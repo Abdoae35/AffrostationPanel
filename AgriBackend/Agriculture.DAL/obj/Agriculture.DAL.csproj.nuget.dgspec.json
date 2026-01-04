@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {}
+    "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {}
   },
   "projects": {
-    "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {
+    "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj",
+        "projectUniqueName": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj",
         "projectName": "Agriculture.DAL",
-        "projectPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj",
+        "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/Agriculture.DAL.csproj",
         "packagesPath": "/Users/macbookpro/.nuget/packages/",
-        "outputPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.DAL/obj/",
+        "outputPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.DAL/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/macbookpro/.nuget/NuGet/NuGet.Config"

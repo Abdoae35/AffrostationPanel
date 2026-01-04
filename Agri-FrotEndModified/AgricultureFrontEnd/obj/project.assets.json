@@ -3279,11 +3279,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/AgricultureFrontEnd.csproj",
+      "projectUniqueName": "/Users/macbookpro/AhmedProject/Agriculture/Agri-FrotEndModified/AgricultureFrontEnd/AgricultureFrontEnd.csproj",
       "projectName": "AgricultureFrontEnd",
-      "projectPath": "/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/AgricultureFrontEnd.csproj",
+      "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/Agri-FrotEndModified/AgricultureFrontEnd/AgricultureFrontEnd.csproj",
       "packagesPath": "/Users/macbookpro/.nuget/packages/",
-      "outputPath": "/Users/macbookpro/Desktop/Agri-FrotEndModified/AgricultureFrontEnd/obj/",
+      "outputPath": "/Users/macbookpro/AhmedProject/Agriculture/Agri-FrotEndModified/AgricultureFrontEnd/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/macbookpro/.nuget/NuGet/NuGet.Config"

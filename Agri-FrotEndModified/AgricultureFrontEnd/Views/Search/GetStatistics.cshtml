@@ -5,139 +5,565 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-5">
-    <form asp-action="GetStatistics" asp-controller="Search" method="post" 
-          class="p-4 bg-light rounded shadow-sm mx-auto" style="max-width: 500px;">
-        @Html.AntiForgeryToken()
-
-        <h4 class="mb-4 text-center">Select Duration & Filters</h4>
-
-        <!-- From Date -->
-        <div class="mb-3">
-            <label asp-for="FromDate" class="form-label"></label>
-            <input asp-for="FromDate" type="date" class="form-control" />
-            <span asp-validation-for="FromDate" class="text-danger"></span>
+<div class="search-stats-container">
+    <!-- Search Form Section -->
+    <div class="search-form-wrapper">
+        <div class="search-form-header">
+            <h2 class="search-form-title">Search Afforestation Data</h2>
+            <p class="search-form-subtitle">Filter by date range, user, location, or plant type</p>
         </div>
 
-        <!-- To Date -->
-        <div class="mb-3">
-            <label asp-for="ToDate" class="form-label"></label>
-            <input asp-for="ToDate" type="date" class="form-control" />
-            <span asp-validation-for="ToDate" class="text-danger"></span>
-        </div>
+        <form asp-action="GetStatistics" asp-controller="Search" method="post" class="search-form">
+            @Html.AntiForgeryToken()
 
-        <!-- User -->
-        <div class="mb-3">
-            <label asp-for="SelectedUserId" class="form-label">User Name</label>
-            <select asp-for="SelectedUserId" asp-items="Model.Users" class="form-select">
-                <option value="">-- Select User --</option>
-            </select>
-            <span asp-validation-for="SelectedUserId" class="text-danger"></span>
-        </div>
-
-        <!-- Location -->
-        <div class="mb-3">
-            <label asp-for="SelectedLocationId" class="form-label">Location</label>
-            <select asp-for="SelectedLocationId" asp-items="Model.Locations" class="form-select">
-                <option value="">-- Select Location --</option>
-            </select>
-            <span asp-validation-for="SelectedLocationId" class="text-danger"></span>
-        </div>
-
-        <!-- Tree -->
-        <div class="mb-3">
-            <label asp-for="SelectedTreeId" class="form-label">Plant Name</label>
-            <select asp-for="SelectedTreeId" asp-items="Model.Trees" class="form-select">
-                <option value="">-- Select Plant --</option>
-            </select>
-            <span asp-validation-for="SelectedTreeId" class="text-danger"></span>
-        </div>
-
-        <!-- Submit -->
-        <button type="submit" class="btn btn-success w-100" style="background-color: #14ae64; box-shadow: none;">
-            Search
-        </button>
-    </form>
-
-    <!-- ===== Last 30 Summary ===== -->
-    <div class="mt-5 container">
-    <h4 class="text-center mb-4">Summary for Last 30 Days</h4>
-
-    <!-- Data Tables -->
-    <div class="row">
-        <!-- By Tree -->
-        <div class="col-md-6 mb-3">
-            <h6 class="text-center text-success fw-bold mb-2">By Plant Name</h6>
-            @if (Model.LastMonthSummary?.Any() == true)
-            {
-                <div class="table-responsive shadow-sm">
-                    <table class="table table-striped table-bordered align-middle text-center">
-                        <thead class="text-white" style="background-color:#14ae64;">
-                            <tr>
-                                <th>Plant</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.LastMonthSummary)
-                            {
-                                <tr>
-                                    <td>@item.TreeName</td>
-                                    <td>@item.TotalPlanted</td>
-                                </tr>
-                            }
-                            <tr class="fw-bold bg-light">
-                                <td>Total</td>
-                                <td>@Model.LastMonthSummary.Sum(x => x.TotalPlanted)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="search-form-row">
+                <!-- From Date -->
+                <div class="search-form-group">
+                    <label asp-for="FromDate" class="search-label">From Date</label>
+                    <input asp-for="FromDate" type="date" class="search-input" />
+                    <span asp-validation-for="FromDate" class="search-validation-error"></span>
                 </div>
-            }
-            else
-            {
-                <div class="alert alert-info text-center">No data found for the last 30 days.</div>
-            }
+
+                <!-- To Date -->
+                <div class="search-form-group">
+                    <label asp-for="ToDate" class="search-label">To Date</label>
+                    <input asp-for="ToDate" type="date" class="search-input" />
+                    <span asp-validation-for="ToDate" class="search-validation-error"></span>
+                </div>
+            </div>
+
+            <div class="search-form-row">
+                <!-- User -->
+                <div class="search-form-group">
+                    <label asp-for="SelectedUserId" class="search-label">User Name</label>
+                    <div class="search-select-wrapper">
+                        <select asp-for="SelectedUserId" asp-items="Model.Users" class="search-select">
+                            <option value="">All Users</option>
+                        </select>
+                        <div class="search-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span asp-validation-for="SelectedUserId" class="search-validation-error"></span>
+                </div>
+
+                <!-- Location -->
+                <div class="search-form-group">
+                    <label asp-for="SelectedLocationId" class="search-label">Location</label>
+                    <div class="search-select-wrapper">
+                        <select asp-for="SelectedLocationId" asp-items="Model.Locations" class="search-select">
+                            <option value="">All Locations</option>
+                        </select>
+                        <div class="search-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span asp-validation-for="SelectedLocationId" class="search-validation-error"></span>
+                </div>
+            </div>
+
+            <!-- Tree (Full Width) -->
+            <div class="search-form-group">
+                <label asp-for="SelectedTreeId" class="search-label">Plant Name</label>
+                <div class="search-select-wrapper">
+                    <select asp-for="SelectedTreeId" asp-items="Model.Trees" class="search-select">
+                        <option value="">All Plants</option>
+                    </select>
+                    <div class="search-select-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </div>
+                <span asp-validation-for="SelectedTreeId" class="search-validation-error"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="search-submit-btn">
+                <svg class="search-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <span>Search Data</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="summary-section">
+        <div class="summary-header">
+            <h3 class="summary-title">Last 30 Days Summary</h3>
+            <p class="summary-subtitle">Overview of afforestation activities in the past month</p>
         </div>
 
-        <!-- By Type -->
-        <div class="col-md-6 mb-3">
-            <h6 class="text-center text-success fw-bold mb-2">By plant Type</h6>
-            @if (Model.TypeSummary?.Any() == true)
-            {
-                <div class="table-responsive shadow-sm">
-                    <table class="table table-striped table-bordered align-middle text-center">
-                        <thead class="text-white" style="background-color:#14ae64;">
-                            <tr>
-                                <th>Type</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.TypeSummary)
-                            {
-                                <tr>
-                                    <td>@item.TypeName</td>
-                                    <td>@item.Count</td>
-                                </tr>
-                            }
-                            <tr class="fw-bold bg-light">
-                                <td>Total</td>
-                                <td>@Model.TypeSummary.Sum(x => x.Count)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="summary-cards">
+            <!-- By Plant Name Card -->
+            <div class="summary-card">
+                <div class="summary-card-header">
+                    <svg class="summary-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                    <h4 class="summary-card-title">By Plant Name</h4>
                 </div>
-            }
-            else
-            {
-                <div class="alert alert-info text-center">No type data found.</div>
-            }
+
+                @if (Model.LastMonthSummary?.Any() == true)
+                {
+                    <div class="summary-table-wrapper">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Plant</th>
+                                    <th>Total Planted</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LastMonthSummary)
+                                {
+                                    <tr>
+                                        <td>@item.TreeName</td>
+                                        <td class="summary-table-number">@item.TotalPlanted</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="summary-table-total">@Model.LastMonthSummary.Sum(x => x.TotalPlanted)</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="summary-empty">
+                        <svg class="summary-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                        </svg>
+                        <p>No data available for the last 30 days</p>
+                    </div>
+                }
+            </div>
+
+            <!-- By Plant Type Card -->
+            <div class="summary-card">
+                <div class="summary-card-header">
+                    <svg class="summary-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    <h4 class="summary-card-title">By Plant Type</h4>
+                </div>
+
+                @if (Model.TypeSummary?.Any() == true)
+                {
+                    <div class="summary-table-wrapper">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Total Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.TypeSummary)
+                                {
+                                    <tr>
+                                        <td>@item.TypeName</td>
+                                        <td class="summary-table-number">@item.Count</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Total</td>
+                                    <td class="summary-table-total">@Model.TypeSummary.Sum(x => x.Count)</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="summary-empty">
+                        <svg class="summary-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                        </svg>
+                        <p>No type data available</p>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
-</div>
+<style>
+    .search-stats-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Search Form Section */
+    .search-form-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: searchSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes searchSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .search-form-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .search-form-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .search-form {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .search-form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .search-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .search-select-wrapper {
+        position: relative;
+    }
+
+    .search-select {
+        width: 100%;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .search-select:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .search-select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #7a9971;
+        pointer-events: none;
+    }
+
+    .search-select-arrow svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    .search-validation-error {
+        display: block;
+        color: #ef5350;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .search-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .search-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .search-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .search-btn-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Summary Section */
+    .summary-section {
+        animation: searchSlideUp 0.8s ease-out;
+    }
+
+    .summary-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .summary-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 2rem;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        transition: all 0.3s ease;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(45, 80, 22, 0.12);
+    }
+
+    .summary-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f9f4;
+    }
+
+    .summary-card-icon {
+        width: 32px;
+        height: 32px;
+        color: #66bb6a;
+        stroke-width: 2;
+    }
+
+    .summary-card-title {
+        color: #2d5016;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .summary-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .summary-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .summary-table thead tr th {
+        background: #f8fdf9;
+        color: #2d5016;
+        font-weight: 600;
+        text-align: left;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+        border-bottom: 2px solid #e8f5e9;
+    }
+
+    .summary-table thead tr th:last-child {
+        text-align: right;
+    }
+
+    .summary-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .summary-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .summary-table tbody tr td {
+        padding: 0.75rem 1rem;
+        color: #2d5016;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .summary-table-number {
+        text-align: right;
+        font-weight: 500;
+        color: #4a7c3e;
+    }
+
+    .summary-table tfoot tr td {
+        padding: 1rem;
+        font-weight: 700;
+        color: #2d5016;
+        background: #e8f5e9;
+        border-top: 2px solid #66bb6a;
+    }
+
+    .summary-table-total {
+        text-align: right;
+        font-size: 1.1rem;
+        color: #2d5016;
+    }
+
+    .summary-empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #7a9971;
+    }
+
+    .summary-empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        opacity: 0.3;
+        stroke-width: 1.5;
+    }
+
+    .summary-empty p {
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .search-form-wrapper {
+            padding: 2rem 1.5rem;
+        }
+
+        .search-form-title,
+        .summary-title {
+            font-size: 1.5rem;
+        }
+
+        .search-form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .search-stats-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .search-form-wrapper {
+            padding: 1.5rem 1rem;
+        }
+
+        .summary-card {
+            padding: 1.5rem 1rem;
+        }
+
+        .search-input,
+        .search-select {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .search-select {
+            padding-right: 2.25rem;
+        }
+
+        .summary-table thead tr th,
+        .summary-table tbody tr td,
+        .summary-table tfoot tr td {
+            padding: 0.625rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    }
+</style>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

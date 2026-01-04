@@ -1,68 +1,816 @@
 @model List<UserReadVM>
 @{
-ViewBag.Title = "Show All Users";
-Layout = "_Layout";
+    ViewBag.Title = "Show All Users";
+    Layout = "_Layout";
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-<script>
-    alert("@TempData["SuccessMessage"]");
-</script>
-}
+<div class="users-container">
+    <!-- Header -->
+    <div class="users-header">
+        <h2 class="users-title">User Management</h2>
+        <p class="users-subtitle">View and manage all system users</p>
+    </div>
 
-<div class="container mt-4">
-    <div class="card shadow-lg border-0 rounded-3">
-        <div class="card-header text-white fw-bold" style="background-color: #14ae64;">
-            <h4 class="mb-0 text-center">All Users</h4>
-        </div>
-        <div class="card-body">
-            @if (!Model.Any())
-            {
-            <div class="alert alert-warning text-center">
-                🚨 No Users Found.
+    <!-- Success Alert (if exists) -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="users-alert users-alert-success" id="successAlert">
+            <div class="users-alert-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             </div>
-            }
-            else
-            {
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-                    <thead class="table-success text-dark">
-                    <tr>
-                        <th class="py-3">Name</th>
-                        <th class="py-3">Email</th>
-                        <th class="py-3">Role</th>
-                        <th class="py-3">Manage User</th>
-                    </tr>
+            <div class="users-alert-content">
+                <strong class="users-alert-title">Success!</strong>
+                <p class="users-alert-message">@TempData["SuccessMessage"]</p>
+            </div>
+            <button class="users-alert-close" onclick="closeAlert()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <!-- Empty State -->
+        <div class="users-empty">
+            <svg class="users-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <h3>No Users Found</h3>
+            <p>There are no users in the system yet.</p>
+        </div>
+    }
+    else
+    {
+        <!-- Users Stats -->
+        <div class="users-stats">
+            <div class="users-stat-card">
+                <div class="users-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+                <div class="users-stat-text">
+                    <p class="users-stat-label">Total Users</p>
+                    <h3 class="users-stat-value">@Model.Count</h3>
+                </div>
+            </div>
+
+            <div class="users-stat-card">
+                <div class="users-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <div class="users-stat-text">
+                    <p class="users-stat-label">Admins</p>
+                    <h3 class="users-stat-value">@Model.Count(u => u.Role == Roles.Admin)</h3>
+                </div>
+            </div>
+
+            <div class="users-stat-card">
+                <div class="users-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </div>
+                <div class="users-stat-text">
+                    <p class="users-stat-label">Regular Users</p>
+                    <h3 class="users-stat-value">@Model.Count(u => u.Role == Roles.User)</h3>
+                </div>
+            </div>
+            
+            <div class="users-stat-card">
+                <div class="users-stat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </div>
+                <div class="users-stat-text">
+                    <p class="users-stat-label">Viewers</p>
+                    <h3 class="users-stat-value">@Model.Count(u => u.Role == Roles.Viewer)</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="users-tabs">
+            <button class="users-tab active" onclick="switchTab('all')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                All Users
+            </button>
+            <button class="users-tab" onclick="switchTab('admins')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                Admins
+            </button>
+            <button class="users-tab" onclick="switchTab('users')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Regular Users
+            </button>
+            <button class="users-tab" onclick="switchTab('viewers')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Viewers
+            </button>
+        </div>
+
+        <!-- No Results Message -->
+        <div class="users-no-results" id="noResultsMessage" style="display: none;">
+            <svg class="users-no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h3 class="users-no-results-title">No <span id="roleTypeName">Users</span> Found</h3>
+            <p class="users-no-results-text">There are no <span id="roleTypeNameLower">users</span> in the system at the moment.</p>
+        </div>
+
+        <!-- Users Table -->
+        <div class="users-table-wrapper" id="usersTableWrapper">
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                    @await Html.PartialAsync("_UsersTable", Model)
+                        @await Html.PartialAsync("_UsersTable", Model)
                     </tbody>
                 </table>
             </div>
-            }
         </div>
+    }
+</div>
+
+<!-- Error Modal -->
+<div class="users-error-modal" id="errorModal" style="display: none;">
+    <div class="users-error-overlay" onclick="closeErrorModal()"></div>
+    <div class="users-error-content">
+        <div class="users-error-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <h3 class="users-error-title">Cannot Delete User</h3>
+        <p class="users-error-message" id="errorMessage"></p>
+        <button class="users-error-btn" onclick="closeErrorModal()">Close</button>
     </div>
 </div>
 
+<style>
+    .users-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Header */
+    .users-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: usersSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes usersSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .users-title {
+        color: #2d5016;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .users-subtitle {
+        color: #7a9971;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    /* Success Alert */
+    .users-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        position: relative;
+        animation: usersAlertSlide 0.5s ease-out;
+    }
+
+    @@keyframes usersAlertSlide {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .users-alert-success {
+        background: #e8f5e9;
+        border: 2px solid #81c784;
+    }
+
+    .users-alert-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        color: #66bb6a;
+    }
+
+    .users-alert-icon svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    .users-alert-content {
+        flex: 1;
+    }
+
+    .users-alert-title {
+        display: block;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+        color: #2d5016;
+    }
+
+    .users-alert-message {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #4a7c3e;
+    }
+
+    .users-alert-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        color: #4a7c3e;
+        transition: all 0.2s ease;
+    }
+
+    .users-alert-close:hover {
+        color: #2d5016;
+        transform: scale(1.1);
+    }
+
+    .users-alert-close svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    /* Empty State */
+    .users-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+    }
+
+    .users-empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        color: #a5d6a7;
+        stroke-width: 1.5;
+    }
+
+    .users-empty h3 {
+        color: #2d5016;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .users-empty p {
+        color: #7a9971;
+        margin: 0;
+    }
+
+    /* No Results Message */
+    .users-no-results {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        margin-bottom: 2rem;
+        animation: usersSlideUp 0.5s ease-out;
+    }
+
+    .users-no-results-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.25rem;
+        color: #a5d6a7;
+        stroke-width: 1.5;
+    }
+
+    .users-no-results-title {
+        color: #2d5016;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .users-no-results-text {
+        color: #7a9971;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Stats Cards */
+    .users-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        animation: usersSlideUp 0.7s ease-out;
+    }
+
+    .users-stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .users-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(45, 80, 22, 0.12);
+    }
+
+    .users-stat-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .users-stat-icon svg {
+        width: 30px;
+        height: 30px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .users-stat-text {
+        flex: 1;
+    }
+
+    .users-stat-label {
+        color: #7a9971;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .users-stat-value {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Tabs */
+    .users-tabs {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        animation: usersSlideUp 0.75s ease-out;
+        flex-wrap: wrap;
+    }
+
+    .users-tab {
+        background: white;
+        border: 2px solid #e8f5e9;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        color: #7a9971;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .users-tab svg {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.5;
+    }
+
+    .users-tab:hover {
+        background: #f8fdf9;
+        border-color: #81c784;
+        color: #2d5016;
+        transform: translateY(-2px);
+    }
+
+    .users-tab.active {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        border-color: #66bb6a;
+        color: white;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+    }
+
+    /* Table */
+    .users-table-wrapper {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: usersSlideUp 0.8s ease-out;
+    }
+
+    .users-table-container {
+        overflow-x: auto;
+    }
+
+    .users-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .users-table thead tr th {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        font-weight: 600;
+        text-align: left;
+        padding: 1rem;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+    .users-table thead tr th:first-child {
+        border-top-left-radius: 14px;
+    }
+
+    .users-table thead tr th:last-child {
+        border-top-right-radius: 14px;
+        text-align: center;
+    }
+
+    .users-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .users-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .users-table tbody tr td {
+        padding: 0.875rem 1rem;
+        color: #2d5016;
+        font-size: 0.9rem;
+    }
+
+    .users-table tbody tr td:last-child {
+        text-align: center;
+    }
+
+    /* Hidden rows for filtering */
+    .users-table tbody tr.hidden {
+        display: none;
+    }
+
+    /* Error Modal */
+    .users-error-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: usersModalFadeIn 0.3s ease-out;
+    }
+
+    @@keyframes usersModalFadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .users-error-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .users-error-content {
+        position: relative;
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        max-width: 500px;
+        margin: 1rem;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        animation: usersModalSlideUp 0.3s ease-out;
+    }
+
+    @@keyframes usersModalSlideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .users-error-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.5rem;
+        background: #fff8e1;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .users-error-icon svg {
+        width: 36px;
+        height: 36px;
+        color: #ffa726;
+        stroke-width: 2;
+    }
+
+    .users-error-title {
+        color: #2d5016;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .users-error-message {
+        color: #5d7c50;
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .users-error-btn {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .users-error-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .users-title {
+            font-size: 1.5rem;
+        }
+
+        .users-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .users-table {
+            font-size: 0.85rem;
+        }
+
+        .users-table thead tr th,
+        .users-table tbody tr td {
+            padding: 0.625rem 0.75rem;
+        }
+
+        .users-stat-value {
+            font-size: 1.5rem;
+        }
+
+        .users-tabs {
+            gap: 0.5rem;
+        }
+
+        .users-tab {
+            padding: 0.625rem 1rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .users-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .users-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .users-table {
+            min-width: 700px;
+        }
+
+        .users-stat-card {
+            padding: 1.5rem;
+        }
+
+        .users-stat-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .users-stat-icon svg {
+            width: 25px;
+            height: 25px;
+        }
+
+        .users-error-content {
+            padding: 2rem;
+        }
+    }
+</style>
+
 <script>
+    // Close success alert
+    function closeAlert() {
+        const alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
+        }
+    }
+
+    // Auto-hide success alert after 5 seconds
+    setTimeout(() => {
+        closeAlert();
+    }, 5000);
+
+    // Switch tabs
+    function switchTab(tab) {
+        // Update active tab
+        const tabs = document.querySelectorAll('.users-tab');
+        tabs.forEach(t => t.classList.remove('active'));
+        event.target.closest('.users-tab').classList.add('active');
+
+        // Filter table rows
+        const rows = document.querySelectorAll('#usersTableBody tr');
+        let visibleCount = 0;
+        
+        rows.forEach(row => {
+            const role = row.getAttribute('data-role');
+            if (tab === 'all') {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else if (tab === 'admins' && role === 'Admin') {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else if (tab === 'users' && role === 'User') {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else if (tab === 'viewers' && role === 'Viewer') {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+
+        // Show/hide no results message
+        const noResultsMessage = document.getElementById('noResultsMessage');
+        const tableWrapper = document.getElementById('usersTableWrapper');
+        const roleTypeName = document.getElementById('roleTypeName');
+        const roleTypeNameLower = document.getElementById('roleTypeNameLower');
+
+        if (visibleCount === 0) {
+            tableWrapper.style.display = 'none';
+            noResultsMessage.style.display = 'block';
+            
+            // Update role type name based on tab
+            switch(tab) {
+                case 'admins':
+                    roleTypeName.textContent = 'Admins';
+                    roleTypeNameLower.textContent = 'admins';
+                    break;
+                case 'users':
+                    roleTypeName.textContent = 'Regular Users';
+                    roleTypeNameLower.textContent = 'regular users';
+                    break;
+                case 'viewers':
+                    roleTypeName.textContent = 'Viewers';
+                    roleTypeNameLower.textContent = 'viewers';
+                    break;
+                default:
+                    roleTypeName.textContent = 'Users';
+                    roleTypeNameLower.textContent = 'users';
+            }
+        } else {
+            tableWrapper.style.display = 'block';
+            noResultsMessage.style.display = 'none';
+        }
+    }
+
+    // Delete user function
     async function deleteUser(id, name) {
         if (!confirm(`Are you sure you want to delete the account: ${name}?`)) return;
 
         const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
-        const response = await fetch(`/Users/DeleteUser/${id}`, {
-            method: "DELETE",
-            headers: {
-                "RequestVerificationToken": token
-            }
-        });
+        try {
+            const response = await fetch(`/Users/DeleteUser/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "RequestVerificationToken": token
+                }
+            });
 
-        if (response.ok) {
-            const newBody = await response.text();
-            document.querySelector("#usersTableBody").innerHTML = newBody;
-        } else {
-            alert("⚠️ User has related records. Please delete their records first!");
+            if (response.ok) {
+                const newBody = await response.text();
+                document.querySelector("#usersTableBody").innerHTML = newBody;
+                
+                // Show success feedback
+                showSuccessToast('User deleted successfully');
+            } else {
+                // Show error modal
+                showErrorModal('User has related records. Please delete their records first!');
+            }
+        } catch (error) {
+            showErrorModal('An error occurred while deleting the user.');
         }
+    }
+
+    // Show error modal
+    function showErrorModal(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').style.display = 'flex';
+    }
+
+    // Close error modal
+    function closeErrorModal() {
+        document.getElementById('errorModal').style.display = 'none';
+    }
+
+    // Show success toast (optional enhancement)
+    function showSuccessToast(message) {
+        // You can implement a toast notification here if desired
+        console.log('Success:', message);
     }
 </script>

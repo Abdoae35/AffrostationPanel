@@ -1,48 +1,384 @@
 @model TreeTypePageVM
 
 @{
-    ViewBag.Title = "Add New Tree Type";
-    Layout = "_Layout";
+ViewBag.Title = "Add New Tree Type";
+Layout = "_Layout";
 }
 
-<form id="treeForm" class="p-4 bg-light rounded shadow-sm"
-      style="max-width: 500px; margin: auto;">
-    @Html.AntiForgeryToken()
+<div class="tree-type-container">
+    <!-- Add New Tree Type Section -->
+    <div class="tree-type-form-wrapper">
+        <div class="tree-type-form-header">
+            <h2 class="tree-type-form-title">Add New Plant Type</h2>
+            <p class="tree-type-form-subtitle">Create a new category for your plants</p>
+        </div>
 
-    <h4 class="mb-4 text-center">Add New Plant Type</h4>
+        <form id="treeForm" class="tree-type-form">
+            @Html.AntiForgeryToken()
 
-    <div class="form-group mb-3">
-        <label class="form-label">Plant Type Name</label>
-        <input asp-for="AddModel.Type" class="form-control" id="treeTypeInput" placeholder="Enter plant type name..." />
-        <span id="errorMsg" class="text-danger"></span>
+            <div class="tree-type-input-group">
+                <label class="tree-type-label">Plant Type Name</label>
+                <input asp-for="AddModel.Type"
+                       class="tree-type-input"
+                       id="treeTypeInput"
+                       placeholder="Enter plant type name..." />
+                <span id="errorMsg" class="tree-type-error"></span>
+            </div>
+
+            <button type="submit" class="tree-type-submit-btn">
+                <span>Add Plant Type</span>
+            </button>
+        </form>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100"
-            style="background-color: #14ae64; box-shadow: none;">
-        Submit
-    </button>
-</form>
+    <!-- All Plant Types Section -->
+    <div class="tree-type-table-wrapper">
+        <div class="tree-type-table-header">
+            <h3 class="tree-type-table-title">All Plant Types</h3>
+            <p class="tree-type-table-subtitle">Manage your existing plant categories</p>
+        </div>
 
-<br />
-
-<h3 class="mb-4 text-center">All Plant Types</h3>
-
-<div class="table-responsive">
-    <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-        <thead style="background-color: #14ae64; box-shadow: none;">
-            <tr style="color: white">
-                <th>Plant Type Name</th>
-                <th>Manage</th>
-            </tr>
-        </thead>
-        <tbody id="treeTableBody">
-            @await Html.PartialAsync("_TreeTypeTable", Model.AllTypes)
-        </tbody>
-    </table>
+        <div class="tree-type-table-container">
+            <table class="tree-type-table">
+                <thead>
+                <tr>
+                    <th>Plant Type Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="treeTableBody">
+                @await Html.PartialAsync("_TreeTypeTable", Model.AllTypes)
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
+<style>
+    .tree-type-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Form Section */
+    .tree-type-form-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: treeTypeSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes treeTypeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .tree-type-form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .tree-type-form-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .tree-type-form-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .tree-type-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .tree-type-input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .tree-type-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .tree-type-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .tree-type-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .tree-type-error {
+        display: block;
+        color: #e57373;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .tree-type-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+    }
+
+    .tree-type-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .tree-type-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Table Section */
+    .tree-type-table-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: treeTypeSlideUp 0.8s ease-out;
+    }
+
+    .tree-type-table-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .tree-type-table-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .tree-type-table-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .tree-type-table-container {
+        overflow-x: auto;
+    }
+
+    .tree-type-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .tree-type-table thead {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+    }
+
+    .tree-type-table thead tr th {
+        padding: 1rem;
+        color: white;
+        font-weight: 600;
+        text-align: left;
+        font-size: 0.95rem;
+        border: none;
+    }
+
+    .tree-type-table thead tr th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    .tree-type-table thead tr th:last-child {
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
+
+    .tree-type-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .tree-type-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .tree-type-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .tree-type-table tbody tr td {
+        padding: 1rem;
+        color: #2d5016;
+        font-size: 0.95rem;
+    }
+
+    .tree-type-table tbody tr td:last-child {
+        text-align: center;
+    }
+
+    /* Editable Input in Table */
+    .tree-type-table .type-text {
+        font-weight: 500;
+        color: #2d5016;
+    }
+
+    .tree-type-table .type-input {
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #66bb6a;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .tree-type-table .type-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+    }
+
+    /* Action Buttons */
+    .tree-type-table .d-inline-flex {
+        display: inline-flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .tree-type-table .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .tree-type-table .btn-sm {
+        padding: 0.4rem 0.875rem;
+        font-size: 0.85rem;
+    }
+
+    .tree-type-table .btn-warning {
+        background: linear-gradient(135deg, #ffa726 0%, #ffb74d 100%);
+        color: white;
+    }
+
+    .tree-type-table .btn-warning:hover {
+        background: linear-gradient(135deg, #fb8c00 0%, #ffa726 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(255, 167, 38, 0.3);
+    }
+
+    .tree-type-table .btn-success {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+    }
+
+    .tree-type-table .btn-success:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(102, 187, 106, 0.3);
+    }
+
+    .tree-type-table .btn-danger {
+        background: linear-gradient(135deg, #ef5350 0%, #e57373 100%);
+        color: white;
+    }
+
+    .tree-type-table .btn-danger:hover {
+        background: linear-gradient(135deg, #e53935 0%, #ef5350 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+    }
+
+    .tree-type-table .d-none {
+        display: none !important;
+    }
+
+    .tree-type-table .gap-1 {
+        gap: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .tree-type-form-wrapper,
+        .tree-type-table-wrapper {
+            padding: 1.5rem;
+        }
+
+        .tree-type-form-title,
+        .tree-type-table-title {
+            font-size: 1.5rem;
+        }
+
+        .tree-type-table {
+            font-size: 0.875rem;
+        }
+
+        .tree-type-table thead tr th,
+        .tree-type-table tbody tr td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .tree-type-table .btn-sm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .tree-type-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .tree-type-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tree-type-table {
+            min-width: 500px;
+        }
+    }
+</style>
+
 <script>
-    // 🔹 Handle Add
+    // Handle Add
     document.getElementById("treeForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -74,11 +410,11 @@
             document.querySelector("#treeTableBody").innerHTML = newBody;
             document.getElementById("treeTypeInput").value = "";
         } else {
-            alert("Error adding tree type.");
+            errorSpan.textContent = "Error adding plant type.";
         }
     });
 
-    // 🔹 Handle Delete — replace your existing deleteTreeType with this
+    // Handle Delete
     async function deleteTreeType(id, name) {
         if (!confirm(`Are you sure you want to delete: ${name}?`)) return;
 
@@ -94,14 +430,12 @@
         const contentType = (response.headers.get("content-type") || "").toLowerCase();
 
         if (response.ok) {
-            // If backend returned JSON (e.g. { success, html, message })
             if (contentType.includes("application/json")) {
                 const data = await response.json();
                 if (data.success) {
                     if (data.html) {
                         document.querySelector("#treeTableBody").innerHTML = data.html;
                     } else {
-                        // Fallback: remove the row locally
                         document.getElementById(`row-${id}`)?.remove();
                     }
                 } else {
@@ -110,42 +444,33 @@
                 return;
             }
 
-            // Otherwise assume HTML partial (or plain text message)
             const text = await response.text();
-            // If returned HTML partial -> replace table body
             if (text.trim().startsWith("<")) {
                 document.querySelector("#treeTableBody").innerHTML = text;
             } else {
-                // Plain text (error message)
-                alert(text || "Deleted (no HTML returned).");
+                alert(text || "Deleted successfully.");
             }
         } else {
-            // Non-OK status (400/500 etc.) — show server message if available
             const errText = await response.text();
             try {
                 const errJson = JSON.parse(errText);
-                alert(errJson.message || errText || "Error deleting tree type.");
+                alert(errJson.message || errText || "Error deleting plant type.");
             } catch {
-                alert(errText || "Error deleting tree type.");
+                alert(errText || "Error deleting plant type.");
             }
         }
     }
 
-
-</script>
-<script>
-    // existing Add + Delete code here...
-
-    // 🔹 Enable editing
+    // Enable editing
     function editTreeType(id) {
         const row = document.getElementById(`row-${id}`);
         row.querySelector(".type-text").classList.add("d-none");
         row.querySelector(".type-input").classList.remove("d-none");
-        row.querySelector(".btn-warning").classList.add("d-none"); // hide Edit
-        row.querySelector(".btn-success").classList.remove("d-none"); // show Save
+        row.querySelector(".btn-warning").classList.add("d-none");
+        row.querySelector(".btn-success").classList.remove("d-none");
     }
 
-    // 🔹 Save edited value
+    // Save edited value
     async function saveTreeType(id) {
         const row = document.getElementById(`row-${id}`);
         const newValue = row.querySelector(".type-input").value.trim();
@@ -173,4 +498,3 @@
         }
     }
 </script>
-

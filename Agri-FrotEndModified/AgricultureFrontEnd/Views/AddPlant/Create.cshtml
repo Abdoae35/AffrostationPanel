@@ -9,266 +9,762 @@ var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 var isAdmin = userRole == "Admin";
 var today = DateTime.Now.ToString("yyyy-MM-dd");
 var minDate = DateTime.Now.AddDays(-14).ToString("yyyy-MM-dd");
-
-// Build attributes for the date input
-var dateAttrs = new Dictionary<string, object>
-{
-["type"] = "date",
-["class"] = "form-control form-control-sm",
-["value"] = today // default today
-};
-if (!isAdmin)
-{
-dateAttrs["min"] = minDate;
-dateAttrs["max"] = today;
-}
 }
 
-<div class="container mt-4" style="max-width: 600px;">
-    <div class="card shadow-sm border-0">
-        <div class="card-header text-white fw-bold text-center py-2" style="background-color:#14ae64; font-size: 1rem;">
-            🌱 إضافة عملية تشجير جديدة
+<div class="afforestation-container">
+    <div class="afforestation-card">
+        <div class="afforestation-header">
+            <h2 class="afforestation-title">إضافة عملية تشجير جديدة</h2>
+            <p class="afforestation-subtitle">Add a new afforestation operation</p>
         </div>
-        <div class="card-body p-3">
 
-            @if (TempData["Success"] != null)
-            {
-            <div class="alert alert-success text-center py-1">@TempData["Success"]</div>
-            }
-            @if (TempData["Error"] != null)
-            {
-            <div class="alert alert-danger text-center py-1">@TempData["Error"]</div>
-            }
+        <div class="afforestation-body">
+            <!-- Success Message -->
+            <div id="successAlert" class="afforestation-alert afforestation-alert-success" style="display: none;">
+                <div class="afforestation-alert-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="afforestation-alert-content">
+                    <strong class="afforestation-alert-title">Success!</strong>
+                    <p class="afforestation-alert-message" id="successMessage"></p>
+                </div>
+            </div>
 
-            <form asp-action="Create" method="post">
+            <!-- Error Message -->
+            <div id="errorAlert" class="afforestation-alert afforestation-alert-error" style="display: none;">
+                <div class="afforestation-alert-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="afforestation-alert-content">
+                    <strong class="afforestation-alert-title">Error!</strong>
+                    <p class="afforestation-alert-message" id="errorMessage"></p>
+                </div>
+            </div>
+
+            <form id="afforestationForm" class="afforestation-form">
                 @Html.AntiForgeryToken()
 
                 <!-- Tree Type -->
-                <div class="mb-2">
-                    <label class="form-label fw-semibold small">نوع النبات</label>
-                    <select id="treeTypeDropdown" class="form-select form-select-sm" required>
-                        <option value="">اختر نوع النبات</option>
-                        @if (Model.TreeTypes != null)
-                        {
-                        foreach (var type in Model.TreeTypes)
-                        {
-                        <option value="@type">@type</option>
-                        }
-                        }
-                    </select>
-                    <span class="text-danger small" data-valmsg-for="TreeType" data-valmsg-replace="true"></span>
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">نوع النبات</label>
+                    <div class="afforestation-select-wrapper">
+                        <select id="treeTypeDropdown" class="afforestation-select" required>
+                            <option value="">اختر نوع النبات</option>
+                            @if (Model.TreeTypes != null)
+                            {
+                            foreach (var type in Model.TreeTypes)
+                            {
+                            <option value="@type">@type</option>
+                            }
+                            }
+                        </select>
+                        <div class="afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="treeTypeError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>اختيار نوع النبات مطلوب</span>
+                    </div>
                 </div>
 
                 <!-- Tree Name -->
-                <div class="mb-2">
-                    <label class="form-label fw-semibold small">اسم النبات</label>
-                    <select asp-for="TreeNameId" class="form-select form-select-sm" id="treeDropdown">
-                        <option value="">اختر اسم النبات</option>
-                        @if (Model.TreeNames != null)
-                        {
-                        foreach (var tree in Model.TreeNames)
-                        {
-                        <option value="@tree.Id" data-type="@tree.Type">@tree.Name</option>
-                        }
-                        }
-                    </select>
-                    <span asp-validation-for="TreeNameId" class="text-danger small"></span>
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">اسم النبات</label>
+                    <div class="afforestation-select-wrapper">
+                        <select id="treeDropdown" name="TreeNameId" class="afforestation-select">
+                            <option value="">اختر اسم النبات</option>
+                            @if (Model.TreeNames != null)
+                            {
+                            foreach (var tree in Model.TreeNames)
+                            {
+                            <option value="@tree.Id" data-type="@tree.Type">@tree.Name</option>
+                            }
+                            }
+                        </select>
+                        <div class="afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="treeNameError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>اختيار اسم النبات مطلوب</span>
+                    </div>
                 </div>
 
                 <!-- Location Type -->
-                <div class="mb-2">
-                    <label class="form-label fw-semibold small">نوع الموقع</label>
-                    <select id="locationTypeDropdown" class="form-select form-select-sm" required>
-                        <option value="">اختر نوع الموقع</option>
-                        @if (Model.LocationTypes != null)
-                        {
-                        foreach (var type in Model.LocationTypes)
-                        {
-                        <option value="@type">@type</option>
-                        }
-                        }
-                    </select>
-                    <span class="text-danger small" data-valmsg-for="LocationType" data-valmsg-replace="true"></span>
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">نوع الموقع</label>
+                    <div class="afforestation-select-wrapper">
+                        <select id="locationTypeDropdown" class="afforestation-select" required>
+                            <option value="">اختر نوع الموقع</option>
+                            @if (Model.LocationTypes != null)
+                            {
+                            foreach (var type in Model.LocationTypes)
+                            {
+                            <option value="@type">@type</option>
+                            }
+                            }
+                        </select>
+                        <div class="afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="locationTypeError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>اختيار نوع الموقع مطلوب</span>
+                    </div>
                 </div>
 
                 <!-- Location Name -->
-                <div class="mb-2">
-                    <label class="form-label fw-semibold small">موقع الزراعة</label>
-                    <select asp-for="LocationNameId" class="form-select form-select-sm" id="locationDropdown">
-                        <option value="">اختر العنوان</option>
-                        @if (Model.LocationNames != null)
-                        {
-                        foreach (var loc in Model.LocationNames)
-                        {
-                        <option value="@loc.Id" data-type="@loc.LocationType">@loc.Name</option>
-                        }
-                        }
-                    </select>
-                    <span asp-validation-for="LocationNameId" class="text-danger small"></span>
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">موقع الزراعة</label>
+                    <div class="afforestation-select-wrapper">
+                        <select id="locationDropdown" name="LocationNameId" class="afforestation-select">
+                            <option value="">اختر العنوان</option>
+                            @if (Model.LocationNames != null)
+                            {
+                            foreach (var loc in Model.LocationNames)
+                            {
+                            <option value="@loc.Id" data-type="@loc.LocationType">@loc.Name</option>
+                            }
+                            }
+                        </select>
+                        <div class="afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="locationNameError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>اختيار العنوان مطلوب</span>
+                    </div>
                 </div>
 
                 <!-- Number of Trees -->
-                <div class="mb-2">
-                    <label class="form-label fw-semibold small">عدد النباتات</label>
-                    <input asp-for="Number" type="number" class="form-control form-control-sm" />
-                    <span asp-validation-for="Number" class="text-danger small"></span>
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">عدد النباتات</label>
+                    <input name="Number" type="number" class="afforestation-input" id="numberInput" min="1" />
+                    <div id="numberError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>عدد النباتات مطلوب ويجب أن يكون أكبر من 0</span>
+                    </div>
                 </div>
 
-               
                 <!-- Planting Date -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold small">
+                <div class="afforestation-form-group">
+                    <label class="afforestation-label">
                         @(isAdmin ? "تاريخ الزراعة" : "تاريخ الزراعة (اخر اسبوعين فقط)")
                     </label>
-
                     @if (isAdmin)
                     {
-                        <!-- Admin can choose any date -->
-                        <input asp-for="DateOfPlanted"
-                               type="date"
-                               class="form-control form-control-sm"
-                               value="@Model.DateOfPlanted.ToString("yyyy-MM-dd")" />
+                    <input name="DateOfPlanted" type="date" class="afforestation-input" id="dateInput" value="@today" />
                     }
                     else
                     {
-                        <!-- User: restrict last 14 days -->
-                        <input asp-for="DateOfPlanted"
-                               type="date"
-                               class="form-control form-control-sm"
-                               min="@minDate"
-                               max="@today"
-                               value="@Model.DateOfPlanted.ToString("yyyy-MM-dd")" />
+                    <input name="DateOfPlanted" type="date" class="afforestation-input" id="dateInput" min="@minDate" max="@today" value="@today" />
                     }
-
-                    <span asp-validation-for="DateOfPlanted" class="text-danger small"></span>
+                    <div id="dateError" class="afforestation-error-message">
+                        <svg class="afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>تاريخ الزراعة مطلوب</span>
+                    </div>
                 </div>
 
-
-
-
-
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-sm text-white fw-bold" style="background-color:#14ae64;">
-                        ➕ إضافة العملية
-                    </button>
-                </div>
+                <button type="submit" class="afforestation-submit-btn">
+                    <span>إضافة العملية</span>
+                    <svg class="afforestation-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </button>
             </form>
         </div>
     </div>
 </div>
 
-@section Scripts {
-<partial name="_ValidationScriptsPartial" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+    .afforestation-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
 
+    .afforestation-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        overflow: hidden;
+        animation: afforestationSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes afforestationSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .afforestation-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .afforestation-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .afforestation-subtitle {
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.95;
+    }
+
+    .afforestation-body {
+        padding: 2.5rem;
+    }
+
+    /* Alert Messages */
+    .afforestation-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        animation: afforestationAlertSlide 0.5s ease-out;
+    }
+
+    @@keyframes afforestationAlertSlide {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .afforestation-alert-success {
+        background: #e8f5e9;
+        border: 2px solid #81c784;
+    }
+
+    .afforestation-alert-error {
+        background: #ffebee;
+        border: 2px solid #ef5350;
+    }
+
+    .afforestation-alert-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    .afforestation-alert-success .afforestation-alert-icon {
+        color: #66bb6a;
+    }
+
+    .afforestation-alert-error .afforestation-alert-icon {
+        color: #ef5350;
+    }
+
+    .afforestation-alert-icon svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    .afforestation-alert-content {
+        flex: 1;
+    }
+
+    .afforestation-alert-title {
+        display: block;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .afforestation-alert-success .afforestation-alert-title {
+        color: #2d5016;
+    }
+
+    .afforestation-alert-error .afforestation-alert-title {
+        color: #c62828;
+    }
+
+    .afforestation-alert-message {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .afforestation-alert-success .afforestation-alert-message {
+        color: #4a7c3e;
+    }
+
+    .afforestation-alert-error .afforestation-alert-message {
+        color: #d32f2f;
+    }
+
+    /* Form */
+    .afforestation-form {
+        margin-top: 0;
+    }
+
+    .afforestation-form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .afforestation-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .afforestation-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .afforestation-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    /* Select Dropdown */
+    .afforestation-select-wrapper {
+        position: relative;
+    }
+
+    .afforestation-select {
+        width: 100%;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .afforestation-select:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .afforestation-select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #7a9971;
+        pointer-events: none;
+    }
+
+    .afforestation-select-arrow svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    /* Error Messages */
+    .afforestation-error-message {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 8px;
+        color: #d32f2f;
+        font-size: 0.875rem;
+        font-weight: 500;
+        animation: afforestationErrorShake 0.5s ease;
+    }
+
+    @@keyframes afforestationErrorShake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-5px);
+        }
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    .afforestation-error-message.show {
+        display: flex;
+    }
+
+    .afforestation-error-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        stroke-width: 2.5;
+    }
+
+    /* Submit Button */
+    .afforestation-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .afforestation-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .afforestation-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .afforestation-submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .afforestation-btn-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .afforestation-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .afforestation-title {
+            font-size: 1.5rem;
+        }
+
+        .afforestation-subtitle {
+            font-size: 0.95rem;
+        }
+
+        .afforestation-form-group {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .afforestation-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .afforestation-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .afforestation-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .afforestation-title {
+            font-size: 1.35rem;
+        }
+
+        .afforestation-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .afforestation-input,
+        .afforestation-select {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .afforestation-select {
+            padding-right: 2.25rem;
+        }
+
+        .afforestation-alert {
+            padding: 0.875rem 1rem;
+        }
+
+        .afforestation-alert-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .afforestation-submit-btn {
+            padding: 0.875rem;
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        .afforestation-container {
+            padding: 0.75rem 0.25rem;
+        }
+
+        .afforestation-header {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .afforestation-body {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .afforestation-input,
+        .afforestation-select {
+            font-size: 0.9rem;
+            padding: 0.65rem 0.75rem;
+        }
+    }
+</style>
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
-    // All Options for both location and plantType
+    // Store all options
     const treeOptions = $("#treeDropdown option").clone();
     const locationOptions = $("#locationDropdown option").clone();
 
-    // Filter Based on Plant Type
+    // Filter tree names based on tree type
     $("#treeTypeDropdown").on("change", function () {
         let selectedType = $(this).val();
         let $treeDropdown = $("#treeDropdown");
 
         $treeDropdown.empty().append('<option value="">اختر اسم النبات</option>');
 
-        treeOptions.each(function () {
-            if (!$(this).val()) return; // skip default
-            if ($(this).data("type") === selectedType) {
-                $treeDropdown.append($(this).clone());
-            }
-        });
+        if (selectedType) {
+            treeOptions.each(function () {
+                if (!$(this).val()) return;
+                if ($(this).data("type") === selectedType) {
+                    $treeDropdown.append($(this).clone());
+                }
+            });
+        }
+
+        // Clear error when selecting
+        $("#treeTypeError").removeClass("show");
     });
 
-    // Filter Based on Location Type
+    // Filter locations based on location type
     $("#locationTypeDropdown").on("change", function () {
         let selectedType = $(this).val();
         let $locationDropdown = $("#locationDropdown");
 
         $locationDropdown.empty().append('<option value="">اختر العنوان</option>');
 
-        locationOptions.each(function () {
-            if (!$(this).val()) return;
-            if ($(this).data("type") === selectedType) {
-                $locationDropdown.append($(this).clone());
-            }
-        });
+        if (selectedType) {
+            locationOptions.each(function () {
+                if (!$(this).val()) return;
+                if ($(this).data("type") === selectedType) {
+                    $locationDropdown.append($(this).clone());
+                }
+            });
+        }
+
+        // Clear error when selecting
+        $("#locationTypeError").removeClass("show");
     });
 
+    // Clear errors on change
+    $("#treeDropdown").on("change", function() {
+        if ($(this).val()) {
+            $("#treeNameError").removeClass("show");
+        }
+    });
 
-    // Client-side required validation for simple (non-asp-for) dropdowns
-    $("form").on("submit", function () {
-        let valid = true;
+    $("#locationDropdown").on("change", function() {
+        if ($(this).val()) {
+            $("#locationNameError").removeClass("show");
+        }
+    });
 
+    $("#numberInput").on("input", function() {
+        if ($(this).val() && parseInt($(this).val()) > 0) {
+            $("#numberError").removeClass("show");
+        }
+    });
+
+    $("#dateInput").on("change", function() {
+        if ($(this).val()) {
+            $("#dateError").removeClass("show");
+        }
+    });
+
+    // Handle form submission with AJAX
+    $("#afforestationForm").on("submit", async function(e) {
+        e.preventDefault();
+
+        // Validate form
+        let isValid = true;
+
+        // Clear all errors
+        $(".afforestation-error-message").removeClass("show");
+
+        // Validate tree type
         if (!$("#treeTypeDropdown").val()) {
-            $("[data-valmsg-for='TreeType']").text("اختيار نوع النبات مطلوب");
-            valid = false;
-        } else {
-            $("[data-valmsg-for='TreeType']").text("");
+            $("#treeTypeError").addClass("show");
+            isValid = false;
         }
 
+        // Validate tree name
+        if (!$("#treeDropdown").val()) {
+            $("#treeNameError").addClass("show");
+            isValid = false;
+        }
+
+        // Validate location type
         if (!$("#locationTypeDropdown").val()) {
-            $("[data-valmsg-for='LocationType']").text("اختيار نوع الموقع مطلوب");
-            valid = false;
-        } else {
-            $("[data-valmsg-for='LocationType']").text("");
+            $("#locationTypeError").addClass("show");
+            isValid = false;
         }
 
-        return valid;
-    });
-    
-    
-</script>
-<script>
-    
-    const treeTypeSelect = document.getElementById('TreeTypeSelect');
-    const treeSelect = document.getElementById('TreeSelect');
-    const treeOptions = Array.from(treeSelect.querySelectorAll('option'));
+        // Validate location name
+        if (!$("#locationDropdown").val()) {
+            $("#locationNameError").addClass("show");
+            isValid = false;
+        }
 
-    const locationTypeSelect = document.getElementById('LocationTypeSelect');
-    const locationSelect = document.getElementById('LocationSelect');
-    const locationOptions = Array.from(locationSelect.querySelectorAll('option'));
+        // Validate number
+        const number = $("#numberInput").val();
+        if (!number || parseInt(number) <= 0) {
+            $("#numberError").addClass("show");
+            isValid = false;
+        }
 
-    function filterSelect(parentSelect, childSelect, dataAttr, allOptions) {
-        const selectedValue = parentSelect.value;
-        childSelect.innerHTML = '<option value="">-- اختر --</option>';
-        allOptions.forEach(opt => {
-            if (!opt.value) return;
-            if (!selectedValue || opt.getAttribute(dataAttr) === selectedValue) {
-                childSelect.appendChild(opt.cloneNode(true));
+        // Validate date
+        if (!$("#dateInput").val()) {
+            $("#dateError").addClass("show");
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return false;
+        }
+
+        // Disable submit button
+        const submitBtn = $(".afforestation-submit-btn");
+        submitBtn.prop("disabled", true).text("جاري الإضافة...");
+
+        // Get form data
+        const formData = {
+            TreeNameId: $("#treeDropdown").val(),
+            LocationNameId: $("#locationDropdown").val(),
+            Number: parseInt($("#numberInput").val()),
+            DateOfPlanted: $("#dateInput").val()
+        };
+
+        const token = $('input[name="__RequestVerificationToken"]').val();
+
+        try {
+            const response = await fetch('/AddPlant/Create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // Show success message
+                $("#successMessage").text(result.message || "تمت إضافة العملية بنجاح!");
+                $("#successAlert").show();
+                $("#errorAlert").hide();
+
+                // Reset form
+                $("#afforestationForm")[0].reset();
+                $("#treeDropdown").empty().append('<option value="">اختر اسم النبات</option>');
+                $("#locationDropdown").empty().append('<option value="">اختر العنوان</option>');
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    $("#successAlert").fadeOut();
+                }, 3000);
+
+            } else {
+                const error = await response.json();
+                $("#errorMessage").text(error.message || "حدث خطأ أثناء إضافة العملية");
+                $("#errorAlert").show();
+                $("#successAlert").hide();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-        });
-        childSelect.value = "";
-    }
-
-    treeTypeSelect.addEventListener('change', () => {
-        filterSelect(treeTypeSelect, treeSelect, 'data-typename', treeOptions);
-    });
-
-    locationTypeSelect.addEventListener('change', () => {
-        filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions);
-    });
-
-    // Validation before submit
-    document.querySelector("form").addEventListener("submit", function (e) {
-        let valid = true;
-
-        if (!treeTypeSelect.value) {
-            document.getElementById("TreeTypeError").classList.remove("d-none");
-            valid = false;
-        } else {
-            document.getElementById("TreeTypeError").classList.add("d-none");
+        } catch (error) {
+            $("#errorMessage").text("حدث خطأ في الاتصال بالخادم");
+            $("#errorAlert").show();
+            $("#successAlert").hide();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } finally {
+            // Re-enable submit button
+            submitBtn.prop("disabled", false).html('<span>إضافة العملية</span><svg class="afforestation-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>');
         }
-
-        if (!locationTypeSelect.value) {
-            document.getElementById("LocationTypeError").classList.remove("d-none");
-            valid = false;
-        } else {
-            document.getElementById("LocationTypeError").classList.add("d-none");
-        }
-
-        if (!valid) e.preventDefault();
     });
 </script>
 }

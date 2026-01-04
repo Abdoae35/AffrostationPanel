@@ -1,56 +1,530 @@
 @model List<LocationNameReadVM>
 
 @{
-    ViewBag.Title = "Show All Locations";
-    Layout = "_Layout";
-    var groupedLocations = Model.GroupBy(l => l.LocationType);
+ViewBag.Title = "Show All Locations";
+Layout = "_Layout";
+var groupedLocations = Model.GroupBy(l => l.LocationType);
 }
 
-<!-- ✅ TYPE BUTTONS CARD -->
-<div class="card shadow-sm border-0 mx-auto mt-4" style="max-width: 600px; border-radius: 15px;">
-    <div class="card-body text-center">
-        <h5 class="fw-bold mb-3" style="color:#14ae64;">🏡 أنواع المواقع</h5>
+<div class="locations-container">
+    <!-- Header -->
+    <div class="locations-header">
+        <h2 class="locations-title">All Locations</h2>
+        <p class="locations-subtitle">Browse and manage locations by type</p>
+    </div>
 
-        <div class="d-flex justify-content-center flex-wrap gap-2">
+    <!-- Type Selection Card -->
+    <div class="locations-types-card">
+        <div class="locations-types-header">
+            <svg class="locations-types-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <h3 class="locations-types-title">أنواع المواقع</h3>
+        </div>
+
+        <div class="locations-types-buttons">
             @foreach (var type in groupedLocations)
             {
-                <button type="button" class="btn location-type-btn"
-                        data-typeid="@type.First().LocationTypeId"
-                        style="color:#14ae64; border:1px solid #14ae64; background-color:white; min-width:80px;">
-                    @type.Key
-                </button>
+            <button type="button" class="location-type-btn"
+                    data-typeid="@type.First().LocationTypeId"
+                    data-typename="@type.Key">
+                @type.Key
+            </button>
             }
         </div>
     </div>
+
+    <!-- Data Container -->
+    <div id="locationDataContainer" class="locations-data-container">
+        <div class="locations-empty-state">
+            <svg class="locations-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <p>اختر نوع الموقع لعرض التفاصيل</p>
+        </div>
+    </div>
 </div>
 
-<!-- ✅ CONTAINER FOR LOADED LOCATIONS -->
-<div id="locationDataContainer" class="mt-4 text-center">
-    <p class="text-muted">اختر نوع الموقع لعرض التفاصيل 🏠</p>
-</div>
-
-<!-- ✅ ADD LOCATION MODAL -->
+<!-- Add Location Modal -->
 <div class="modal fade" id="addLocationModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header">
-                <h5 class="modal-title text-success">➕ اضافة موقع جديد</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content locations-modal">
+            <div class="modal-header locations-modal-header">
+                <h5 class="modal-title">
+                    <svg class="locations-modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    اضافة موقع جديد
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body locations-modal-body">
                 <input type="hidden" id="locationTypeInput" />
-                <div class="mb-3">
-                    <label class="form-label">🏡 اسم الموقع</label>
-                    <input type="text" class="form-control" id="newLocationName" />
+                <div class="locations-modal-group">
+                    <label class="locations-modal-label">اسم الموقع</label>
+                    <input type="text" class="locations-modal-input" id="newLocationName" placeholder="Enter location name..." />
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
-                <button class="btn btn-success" id="saveLocationBtn">حفظ</button>
+            <div class="modal-footer locations-modal-footer">
+                <button class="locations-modal-btn locations-modal-btn-cancel" data-bs-dismiss="modal">اغلاق</button>
+                <button class="locations-modal-btn locations-modal-btn-save" id="saveLocationBtn">حفظ</button>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .locations-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Header */
+    .locations-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: locationsSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes locationsSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .locations-title {
+        color: #2d5016;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .locations-subtitle {
+        color: #7a9971;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    /* Types Card */
+    .locations-types-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: locationsSlideUp 0.7s ease-out;
+    }
+
+    .locations-types-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .locations-types-icon {
+        width: 28px;
+        height: 28px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .locations-types-title {
+        color: #2d5016;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .locations-types-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .location-type-btn {
+        padding: 0.75rem 1.5rem;
+        background: white;
+        color: #66bb6a;
+        border: 2px solid #66bb6a;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+    }
+
+    .location-type-btn:hover {
+        background: #f8fdf9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.2);
+    }
+
+    .location-type-btn.active {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border-color: #66bb6a;
+    }
+
+    /* Data Container */
+    .locations-data-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        min-height: 300px;
+        animation: locationsSlideUp 0.8s ease-out;
+    }
+
+    .locations-empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #7a9971;
+    }
+
+    .locations-empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        opacity: 0.3;
+        stroke-width: 1.5;
+    }
+
+    .locations-empty-state p {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* Location Table */
+    .locations-table-wrapper {
+        animation: locationsSlideUp 0.5s ease-out;
+    }
+
+    .locations-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .locations-table thead tr th {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        border: none;
+    }
+
+    .locations-table thead tr:first-child th {
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+    }
+
+    .locations-table-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .locations-table-type-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .locations-add-btn {
+        padding: 0.5rem 1rem;
+        background: white;
+        color: #66bb6a;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .locations-add-btn:hover {
+        background: #f8fdf9;
+        transform: scale(1.05);
+    }
+
+    .locations-add-icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.5;
+    }
+
+    .locations-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .locations-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .locations-table tbody tr td {
+        padding: 1rem;
+        color: #2d5016;
+    }
+
+    .locations-table tbody tr td:last-child {
+        text-align: center;
+    }
+
+    .locations-edit-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #66bb6a;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .locations-edit-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+    }
+
+    /* Action Buttons */
+    .locations-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .locations-action-btn {
+        padding: 0.5rem 0.875rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .locations-btn-edit {
+        background: #fff8e1;
+        color: #ffa726;
+    }
+
+    .locations-btn-edit:hover {
+        background: #ffa726;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .locations-btn-save {
+        background: #e8f5e9;
+        color: #66bb6a;
+    }
+
+    .locations-btn-save:hover {
+        background: #66bb6a;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .locations-btn-cancel {
+        background: #f5f5f5;
+        color: #757575;
+    }
+
+    .locations-btn-cancel:hover {
+        background: #e0e0e0;
+        transform: translateY(-1px);
+    }
+
+    .locations-btn-delete {
+        background: #ffebee;
+        color: #ef5350;
+    }
+
+    .locations-btn-delete:hover {
+        background: #ef5350;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .d-none {
+        display: none !important;
+    }
+
+    /* Modal Styling */
+    .locations-modal {
+        border-radius: 16px;
+        border: none;
+    }
+
+    .locations-modal-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border-bottom: none;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .locations-modal-header .modal-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .locations-modal-icon {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2.5;
+    }
+
+    .locations-modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .locations-modal-body {
+        padding: 2rem;
+    }
+
+    .locations-modal-group {
+        margin-bottom: 0;
+    }
+
+    .locations-modal-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .locations-modal-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .locations-modal-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .locations-modal-footer {
+        border-top: 1px solid #f0f9f4;
+        padding: 1.5rem;
+    }
+
+    .locations-modal-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .locations-modal-btn-cancel {
+        background: #f5f5f5;
+        color: #757575;
+    }
+
+    .locations-modal-btn-cancel:hover {
+        background: #e0e0e0;
+    }
+
+    .locations-modal-btn-save {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+    }
+
+    .locations-modal-btn-save:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+    }
+
+    /* Alert Styles */
+    .locations-alert {
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        animation: locationsSlideUp 0.5s ease-out;
+    }
+
+    .locations-alert-warning {
+        background: #fff8e1;
+        border: 2px solid #ffa726;
+        color: #f57c00;
+    }
+
+    .locations-alert-danger {
+        background: #ffebee;
+        border: 2px solid #ef5350;
+        color: #c62828;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .locations-title {
+            font-size: 1.5rem;
+        }
+
+        .locations-types-card,
+        .locations-data-container {
+            padding: 1.5rem;
+        }
+
+        .location-type-btn {
+            min-width: 100px;
+            padding: 0.625rem 1.25rem;
+        }
+
+        .locations-table-header-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .locations-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .locations-types-buttons {
+            flex-direction: column;
+        }
+
+        .location-type-btn {
+            width: 100%;
+        }
+
+        .locations-actions {
+            flex-direction: column;
+        }
+
+        .locations-action-btn {
+            width: 100%;
+        }
+    }
+</style>
 
 @section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -60,74 +534,67 @@
     let currentTypeId = 0;
     let currentTypeName = "";
 
-    // ✅ When user clicks a Location Type button
+    // When user clicks a Location Type button
     $(document).on("click", ".location-type-btn", function () {
         currentTypeId = $(this).data("typeid");
-        currentTypeName = $(this).text().trim();
-
-        console.log("🔹 Selected TypeId:", currentTypeId);
+        currentTypeName = $(this).data("typename");
 
         // Highlight selected button
-        $(".location-type-btn").css({
-            "background-color": "white",
-            "color": "#14ae64"
-        });
-        $(this).css({
-            "background-color": "#14ae64",
-            "color": "white"
-        });
+        $(".location-type-btn").removeClass("active");
+        $(this).addClass("active");
 
-        // ✅ Fetch data via AJAX (fixed)
+        // Fetch data via AJAX
         $.ajax({
             url: '/ShowData/GetAllLocationWithTypeId',
             type: 'GET',
-            data: { typeId: currentTypeId }, // ✅ correct parameter name and value
+            data: { typeId: currentTypeId },
             success: function (res) {
                 if (res.success) {
-                    console.log("✅ Data received for TypeId:", currentTypeId);
                     renderLocationTable(res.data);
                 } else {
-                    $("#locationDataContainer").html(`<div class='alert alert-danger'>${res.message}</div>`);
+                    $("#locationDataContainer").html(`<div class='locations-alert locations-alert-danger'>${res.message}</div>`);
                 }
             },
             error: function () {
-                $("#locationDataContainer").html(`<div class='alert alert-danger'>❌ حدث خطأ أثناء تحميل البيانات</div>`);
+                $("#locationDataContainer").html(`<div class='locations-alert locations-alert-danger'>حدث خطأ أثناء تحميل البيانات</div>`);
             }
         });
     });
 
-    // ✅ Render Location Table
+    // Render Location Table
     function renderLocationTable(locations) {
         if (locations.length === 0) {
-            $("#locationDataContainer").html(`<div class='alert alert-warning text-center'>⚠️ لا توجد مواقع من هذا النوع</div>`);
+            $("#locationDataContainer").html(`<div class='locations-alert locations-alert-warning text-center'>لا توجد مواقع من هذا النوع</div>`);
             return;
         }
 
         let rows = locations.map(l => `
             <tr data-id="${l.id}">
-                <td>${l.name}</td>
+                <td class="location-name-cell">${l.name}</td>
                 <td>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button class="btn btn-warning btn-sm edit-location" data-id="${l.id}">تعديل</button>
-                        <button class="btn btn-success btn-sm save-location d-none" data-id="${l.id}">حفظ</button>
-                        <button class="btn btn-secondary btn-sm cancel-edit d-none">الغاء</button>
-                        <button class="btn btn-danger btn-sm delete-location" data-id="${l.id}">حذف</button>
+                    <div class="locations-actions">
+                        <button class="locations-action-btn locations-btn-edit edit-location" data-id="${l.id}">تعديل</button>
+                        <button class="locations-action-btn locations-btn-save save-location d-none" data-id="${l.id}">حفظ</button>
+                        <button class="locations-action-btn locations-btn-cancel cancel-edit d-none">الغاء</button>
+                        <button class="locations-action-btn locations-btn-delete delete-location" data-id="${l.id}">حذف</button>
                     </div>
                 </td>
             </tr>
         `).join("");
 
         let html = `
-            <div class="table-responsive mx-auto" style="max-width: 600px;">
-                <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-                    <thead style="background-color: #14ae64; color:white;">
+            <div class="locations-table-wrapper">
+                <table class="locations-table">
+                    <thead>
                         <tr>
-                            <th colspan="2" class="p-2 w-100">
-                                <div class="d-flex justify-content-center align-items-center position-relative w-100">
-                                    <span class="fw-bold mx-auto">${currentTypeName}</span>
-                                    <button class="btn btn-light btn-sm text-success add-location-btn position-absolute end-0 me-2"
-                                            data-typeid="${currentTypeId}" data-typename="${currentTypeName}">
-                                        ➕ اضافة موقع
+                            <th colspan="2">
+                                <div class="locations-table-header-content">
+                                    <span class="locations-table-type-name">${currentTypeName}</span>
+                                    <button class="locations-add-btn add-location-btn" data-typeid="${currentTypeId}" data-typename="${currentTypeName}">
+                                        <svg class="locations-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                        </svg>
+                                        اضافة موقع
                                     </button>
                                 </div>
                             </th>
@@ -143,20 +610,20 @@
         $("#locationDataContainer").html(html);
     }
 
-    // ✅ Add New Location Modal
+    // Add New Location Modal
     $(document).on("click", ".add-location-btn", function () {
         $("#locationTypeInput").val($(this).data("typename"));
         $("#newLocationName").val("");
         new bootstrap.Modal(document.getElementById('addLocationModal')).show();
     });
 
-    // ✅ Save New Location
+    // Save New Location
     $("#saveLocationBtn").click(function () {
         let name = $("#newLocationName").val().trim();
         let type = $("#locationTypeInput").val();
 
         if (name === "") {
-            alert("⚠️ يجب ادخال اسم الموقع");
+            alert("يجب ادخال اسم الموقع");
             return;
         }
 
@@ -170,39 +637,39 @@
                     const modal = bootstrap.Modal.getInstance(document.getElementById('addLocationModal'));
                     modal.hide();
                     $(".location-type-btn[data-typeid='" + currentTypeId + "']").click();
-                    alert("✅ تمت إضافة الموقع بنجاح");
                 } else {
-                    alert("❌ فشل اضافة الموقع");
+                    alert("فشل اضافة الموقع");
                 }
             },
             error: function () {
-                alert("❌ حدث خطأ في الاتصال بالخادم");
+                alert("حدث خطأ في الاتصال بالخادم");
             }
         });
     });
 
-    // ✅ Edit, Save, Cancel, Delete
-
+    // Edit Location
     $(document).on("click", ".edit-location", function () {
         let row = $(this).closest("tr");
-        let name = row.find("td:eq(0)").text().trim();
+        let name = row.find(".location-name-cell").text().trim();
 
-        row.find("td:eq(0)").html(`<input type="text" class="form-control new-name" value="${name}" />`);
+        row.find(".location-name-cell").html(`<input type="text" class="locations-edit-input new-name" value="${name}" />`);
         row.find(".edit-location, .delete-location").addClass("d-none");
         row.find(".save-location, .cancel-edit").removeClass("d-none");
     });
 
+    // Cancel Edit
     $(document).on("click", ".cancel-edit", function () {
         $(".location-type-btn[data-typeid='" + currentTypeId + "']").click();
     });
 
+    // Save Location
     $(document).on("click", ".save-location", function () {
         let row = $(this).closest("tr");
         let id = $(this).data("id");
         let name = row.find(".new-name").val().trim();
 
         if (name === "") {
-            alert("⚠️ لا يمكن ترك الاسم فارغًا");
+            alert("لا يمكن ترك الاسم فارغًا");
             return;
         }
 
@@ -219,11 +686,12 @@
                 }
             },
             error: function () {
-                alert("❌ حدث خطأ أثناء تحديث الموقع");
+                alert("حدث خطأ أثناء تحديث الموقع");
             }
         });
     });
 
+    // Delete Location
     $(document).on("click", ".delete-location", function () {
         let id = $(this).data("id");
         if (confirm("هل تريد حذف هذا الموقع؟")) {

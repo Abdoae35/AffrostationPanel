@@ -4798,11 +4798,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.API/Agriculture.API.csproj",
+      "projectUniqueName": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/Agriculture.API.csproj",
       "projectName": "Agriculture.API",
-      "projectPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.API/Agriculture.API.csproj",
+      "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/Agriculture.API.csproj",
       "packagesPath": "/Users/macbookpro/.nuget/packages/",
-      "outputPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.API/obj/",
+      "outputPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/macbookpro/.nuget/NuGet/NuGet.Config"
@@ -4818,8 +4818,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj": {
-              "projectPath": "/Users/macbookpro/Desktop/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj"
+            "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj": {
+              "projectPath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj"
             }
           }
         }

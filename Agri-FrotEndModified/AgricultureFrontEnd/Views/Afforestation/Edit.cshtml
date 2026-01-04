@@ -4,126 +4,472 @@
     Layout = "_Layout";
 }
 
-<div class="container my-5">
-    <div class="card shadow-lg border-0 rounded-3" style="max-width: 750px; margin: auto;">
-        <div class="card-header text-white text-center fw-bold" style="background-color:#14ae64;">
-            Edit Afforestation Record
+<div class="edit-afforestation-container">
+    <div class="edit-afforestation-card">
+        <div class="edit-afforestation-header">
+            <h2 class="edit-afforestation-title">Edit Afforestation Record</h2>
+            <p class="edit-afforestation-subtitle">Update plant and location information</p>
         </div>
-        <div class="card-body p-4">
-            <form asp-action="Edit" method="post">
+
+        <div class="edit-afforestation-body">
+            <form asp-action="Edit" method="post" class="edit-afforestation-form">
                 <input type="hidden" name="Id" value="@Model.AfforstationUpdateVm.Id" />
                 <input type="hidden" name="TreeTypeId" id="TreeTypeHidden" value="@Model.AfforstationUpdateVm.TreeTypeId" />
                 <input type="hidden" name="LocationTypeId" id="LocationTypeHidden" value="@Model.AfforstationUpdateVm.LocationTypeId" />
                 <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
 
-                <!-- ID -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Record ID</label>
-                    <input type="text" class="form-control bg-light" value="@Model.AfforstationUpdateVm.Id" readonly />
+                <!-- Record ID (Read-only) -->
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label">Record ID</label>
+                    <input type="text" 
+                           class="edit-afforestation-input edit-afforestation-readonly" 
+                           value="@Model.AfforstationUpdateVm.Id" 
+                           readonly />
                 </div>
 
                 <!-- Date Planted -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Date Planted</label>
-                    <input type="date" class="form-control"
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label">Date Planted</label>
+                    <input type="date" 
+                           class="edit-afforestation-input"
                            name="DateOfPlanted"
                            value="@(Model.AfforstationUpdateVm.DateOfPlanted.HasValue
                            ? Model.AfforstationUpdateVm.DateOfPlanted.Value.ToDateTime(TimeOnly.MinValue).ToString("yyyy-MM-dd")
                            : string.Empty)" />
                 </div>
 
-                <!-- Tree Type -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" for="TreeTypeSelect">Plant Type</label>
-                    <select id="TreeTypeSelect" class="form-select" required>
-                        <option value="">-- اختر نوع الشجرة --</option>
-                        @foreach (var item in Model.Types ?? new List<TreeTypeReadVM>())
-                        {
-                            <option value="@item.Id"
-                                    data-typeid="@item.Id"
-                                    data-name="@item.Type"
-                                    selected="@(item.Id == Model.AfforstationUpdateVm.TreeTypeId ? "selected" : null)">
-                                @item.Type
-                            </option>
-                        }
-                    </select>
-                    <div class="form-text text-danger d-none" id="TreeTypeError">Dropdown cannot be empty</div>
+                <!-- Plant Type -->
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label" for="TreeTypeSelect">Plant Type</label>
+                    <div class="edit-afforestation-select-wrapper">
+                        <select id="TreeTypeSelect" class="edit-afforestation-select" required>
+                            <option value="">-- اختر نوع الشجرة --</option>
+                            @foreach (var item in Model.Types ?? new List<TreeTypeReadVM>())
+                            {
+                                <option value="@item.Id"
+                                        data-typeid="@item.Id"
+                                        data-name="@item.Type"
+                                        selected="@(item.Id == Model.AfforstationUpdateVm.TreeTypeId ? "selected" : null)">
+                                    @item.Type
+                                </option>
+                            }
+                        </select>
+                        <div class="edit-afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="edit-afforestation-error-message" id="TreeTypeError">
+                        <svg class="edit-afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Plant type selection is required</span>
+                    </div>
                 </div>
 
-                <!-- Tree -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" for="TreeSelect">Plant Name</label>
-                    <select id="TreeSelect" class="form-select" name="TreeNameId" required>
-                        <option value="">-- اختر الشجرة --</option>
-                        @foreach (var item in Model.Trees ?? new List<TreeReadVM>())
-                        {
-                            <option value="@item.Id"
-                                    data-typeid="@item.TypeId"
-                                    data-typename="@item.Type"
-                                    selected="@(item.Id == Model.AfforstationUpdateVm.TreeNameId ? "selected" : null)">
-                                @item.Name
-                            </option>
-                        }
-                    </select>
-                    <div class="form-text text-danger d-none" id="TreeError">Dropdown cannot be empty</div>
+                <!-- Plant Name -->
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label" for="TreeSelect">Plant Name</label>
+                    <div class="edit-afforestation-select-wrapper">
+                        <select id="TreeSelect" class="edit-afforestation-select" name="TreeNameId" required>
+                            <option value="">-- اختر الشجرة --</option>
+                            @foreach (var item in Model.Trees ?? new List<TreeReadVM>())
+                            {
+                                <option value="@item.Id"
+                                        data-typeid="@item.TypeId"
+                                        data-typename="@item.Type"
+                                        selected="@(item.Id == Model.AfforstationUpdateVm.TreeNameId ? "selected" : null)">
+                                    @item.Name
+                                </option>
+                            }
+                        </select>
+                        <div class="edit-afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="edit-afforestation-error-message" id="TreeError">
+                        <svg class="edit-afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Plant name selection is required</span>
+                    </div>
                 </div>
 
                 <!-- Location Type -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" for="LocationTypeSelect">Location Type</label>
-                    <select id="LocationTypeSelect" class="form-select" required>
-                        <option value="">-- اختر نوع الموقع --</option>
-                        @foreach (var item in Model.LocationTypes ?? new List<LocationTypeReadVm>())
-                        {
-                            <option value="@item.Id"
-                                    data-typeid="@item.Id"
-                                    data-name="@item.LocationType"
-                                    selected="@(item.Id == Model.AfforstationUpdateVm.LocationTypeId ? "selected" : null)">
-                                @item.LocationType
-                            </option>
-                        }
-                    </select>
-                    <div class="form-text text-danger d-none" id="LocationTypeError">Dropdown cannot be empty</div>
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label" for="LocationTypeSelect">Location Type</label>
+                    <div class="edit-afforestation-select-wrapper">
+                        <select id="LocationTypeSelect" class="edit-afforestation-select" required>
+                            <option value="">-- اختر نوع الموقع --</option>
+                            @foreach (var item in Model.LocationTypes ?? new List<LocationTypeReadVm>())
+                            {
+                                <option value="@item.Id"
+                                        data-typeid="@item.Id"
+                                        data-name="@item.LocationType"
+                                        selected="@(item.Id == Model.AfforstationUpdateVm.LocationTypeId ? "selected" : null)">
+                                    @item.LocationType
+                                </option>
+                            }
+                        </select>
+                        <div class="edit-afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="edit-afforestation-error-message" id="LocationTypeError">
+                        <svg class="edit-afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Location type selection is required</span>
+                    </div>
                 </div>
 
-                <!-- Location -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" for="LocationSelect">Location Name</label>
-                    <select id="LocationSelect" class="form-select" name="LocationId" required>
-                        <option value="">-- اختر الموقع --</option>
-                        @foreach (var item in Model.Locations ?? new List<LocationNameReadVM>())
-                        {
-                            <option value="@item.Id"
-                                    data-typeid="@item.LocationTypeId"
-                                    data-locationtype="@item.LocationType"
-                                    selected="@(item.Id == Model.AfforstationUpdateVm.LocationId ? "selected" : null)">
-                                @item.Name
-                            </option>
-                        }
-                    </select>
-                    <div class="form-text text-danger d-none" id="LocationError">Dropdown cannot be empty</div>
+                <!-- Location Name -->
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label" for="LocationSelect">Location Name</label>
+                    <div class="edit-afforestation-select-wrapper">
+                        <select id="LocationSelect" class="edit-afforestation-select" name="LocationId" required>
+                            <option value="">-- اختر الموقع --</option>
+                            @foreach (var item in Model.Locations ?? new List<LocationNameReadVM>())
+                            {
+                                <option value="@item.Id"
+                                        data-typeid="@item.LocationTypeId"
+                                        data-locationtype="@item.LocationType"
+                                        selected="@(item.Id == Model.AfforstationUpdateVm.LocationId ? "selected" : null)">
+                                    @item.Name
+                                </option>
+                            }
+                        </select>
+                        <div class="edit-afforestation-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="edit-afforestation-error-message" id="LocationError">
+                        <svg class="edit-afforestation-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Location name selection is required</span>
+                    </div>
                 </div>
 
-                <!-- User Name -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">User Name</label>
-                    <input type="text" class="form-control bg-light" value="@Model.AfforstationUpdateVm.UserName" readonly />
+                <!-- User Name (Read-only) -->
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label">User Name</label>
+                    <input type="text" 
+                           class="edit-afforestation-input edit-afforestation-readonly" 
+                           value="@Model.AfforstationUpdateVm.UserName" 
+                           readonly />
                 </div>
 
                 <!-- Number -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Number</label>
-                    <input type="number" class="form-control" name="Number" value="@Model.AfforstationUpdateVm.Number" />
+                <div class="edit-afforestation-form-group">
+                    <label class="edit-afforestation-label">Number of Plants</label>
+                    <input type="number" 
+                           class="edit-afforestation-input" 
+                           name="Number" 
+                           value="@Model.AfforstationUpdateVm.Number" 
+                           min="1" />
                 </div>
 
-                <!-- Submit -->
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success px-5 shadow-sm">Save Changes</button>
-                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="edit-afforestation-submit-btn">
+                    <svg class="edit-afforestation-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Save Changes</span>
+                </button>
             </form>
         </div>
     </div>
 </div>
+
+<style>
+    .edit-afforestation-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .edit-afforestation-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        overflow: hidden;
+        animation: editAfforestationSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes editAfforestationSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .edit-afforestation-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .edit-afforestation-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .edit-afforestation-subtitle {
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.95;
+    }
+
+    .edit-afforestation-body {
+        padding: 2.5rem;
+    }
+
+    .edit-afforestation-form {
+        margin-top: 0;
+    }
+
+    .edit-afforestation-form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .edit-afforestation-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .edit-afforestation-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .edit-afforestation-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .edit-afforestation-readonly {
+        background: #f5f5f5;
+        color: #757575;
+        cursor: not-allowed;
+    }
+
+    /* Select Dropdown */
+    .edit-afforestation-select-wrapper {
+        position: relative;
+    }
+
+    .edit-afforestation-select {
+        width: 100%;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .edit-afforestation-select:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .edit-afforestation-select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #7a9971;
+        pointer-events: none;
+    }
+
+    .edit-afforestation-select-arrow svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    /* Error Messages */
+    .edit-afforestation-error-message {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 8px;
+        color: #d32f2f;
+        font-size: 0.875rem;
+        font-weight: 500;
+        animation: editAfforestationErrorShake 0.5s ease;
+    }
+
+    @@keyframes editAfforestationErrorShake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-5px);
+        }
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    .edit-afforestation-error-message.show {
+        display: flex;
+    }
+
+    .edit-afforestation-error-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        stroke-width: 2.5;
+    }
+
+    /* Submit Button */
+    .edit-afforestation-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .edit-afforestation-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .edit-afforestation-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .edit-afforestation-btn-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .edit-afforestation-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .edit-afforestation-title {
+            font-size: 1.5rem;
+        }
+
+        .edit-afforestation-subtitle {
+            font-size: 0.95rem;
+        }
+
+        .edit-afforestation-form-group {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .edit-afforestation-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .edit-afforestation-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .edit-afforestation-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .edit-afforestation-title {
+            font-size: 1.35rem;
+        }
+
+        .edit-afforestation-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .edit-afforestation-input,
+        .edit-afforestation-select {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .edit-afforestation-select {
+            padding-right: 2.25rem;
+        }
+
+        .edit-afforestation-submit-btn {
+            padding: 0.875rem;
+            font-size: 1rem;
+        }
+    }
+
+    @@media (max-width: 380px) {
+        .edit-afforestation-container {
+            padding: 0.75rem 0.25rem;
+        }
+
+        .edit-afforestation-header {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .edit-afforestation-body {
+            padding: 1.25rem 0.75rem;
+        }
+
+        .edit-afforestation-input,
+        .edit-afforestation-select {
+            font-size: 0.9rem;
+            padding: 0.65rem 0.75rem;
+        }
+    }
+</style>
 
 @section Scripts {
 <script>
@@ -161,21 +507,29 @@
     treeTypeSelect.addEventListener('change', function () {
         filterSelect(treeTypeSelect, treeSelect, 'data-typename', treeOptions, true);
         treeTypeHidden.value = treeTypeSelect.value;
+        // Clear error when selecting
+        document.getElementById('TreeTypeError').classList.remove('show');
     });
 
     treeSelect.addEventListener('change', function () {
         const selectedOption = treeSelect.options[treeSelect.selectedIndex];
         treeTypeHidden.value = selectedOption?.getAttribute('data-typeid') || '';
+        // Clear error when selecting
+        document.getElementById('TreeError').classList.remove('show');
     });
 
     locationTypeSelect.addEventListener('change', function () {
         filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions, true);
         locationTypeHidden.value = locationTypeSelect.value;
+        // Clear error when selecting
+        document.getElementById('LocationTypeError').classList.remove('show');
     });
 
     locationSelect.addEventListener('change', function () {
         const selectedOption = locationSelect.options[locationSelect.selectedIndex];
         locationTypeHidden.value = selectedOption?.getAttribute('data-typeid') || '';
+        // Clear error when selecting
+        document.getElementById('LocationError').classList.remove('show');
     });
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -183,7 +537,7 @@
         filterSelect(locationTypeSelect, locationSelect, 'data-locationtype', locationOptions);
     });
 
-    // Dropdown validation
+    // Form validation with better error handling
     document.querySelector("form").addEventListener("submit", function (e) {
         let valid = true;
 
@@ -191,10 +545,10 @@
             const select = document.getElementById(id);
             const error = document.getElementById(errorId);
             if (!select.value) {
-                error.classList.remove("d-none");
+                error.classList.add("show");
                 valid = false;
             } else {
-                error.classList.add("d-none");
+                error.classList.remove("show");
             }
         }
 
@@ -204,7 +558,12 @@
         checkSelect("LocationSelect", "LocationError");
 
         if (!valid) {
-            e.preventDefault(); // stop form submission
+            e.preventDefault();
+            // Scroll to first error
+            const firstError = document.querySelector('.edit-afforestation-error-message.show');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
     });
 </script>

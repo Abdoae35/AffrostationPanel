@@ -1,48 +1,384 @@
 @model LocationTypePageVM
 
 @{
-    ViewBag.Title = "Add New Location Type";
-    Layout = "_Layout";
+ViewBag.Title = "Add New Location Type";
+Layout = "_Layout";
 }
 
-<form id="locationForm" class="p-4 bg-light rounded shadow-sm"
-      style="max-width: 500px; margin: auto;">
-    @Html.AntiForgeryToken()
+<div class="location-type-container">
+    <!-- Add New Location Type Section -->
+    <div class="location-type-form-wrapper">
+        <div class="location-type-form-header">
+            <h2 class="location-type-form-title">Add New Location Type</h2>
+            <p class="location-type-form-subtitle">Create a new category for your locations</p>
+        </div>
 
-    <h4 class="mb-4 text-center">Add New Location Type</h4>
+        <form id="locationForm" class="location-type-form">
+            @Html.AntiForgeryToken()
 
-    <div class="form-group mb-3">
-        <label class="form-label">Location Type Name</label>
-        <input asp-for="AddModel.LocationType" class="form-control" id="locationNameInput" placeholder="Enter location type name..." />
-        <span id="errorMsg" class="text-danger"></span>
+            <div class="location-type-input-group">
+                <label class="location-type-label">Location Type Name</label>
+                <input asp-for="AddModel.LocationType"
+                       class="location-type-input"
+                       id="locationNameInput"
+                       placeholder="Enter location type name..." />
+                <span id="errorMsg" class="location-type-error"></span>
+            </div>
+
+            <button type="submit" class="location-type-submit-btn">
+                <span>Add Location Type</span>
+            </button>
+        </form>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100"
-            style="background-color: #14ae64; box-shadow: none;">
-        Submit
-    </button>
-</form>
+    <!-- All Location Types Section -->
+    <div class="location-type-table-wrapper">
+        <div class="location-type-table-header">
+            <h3 class="location-type-table-title">All Location Types</h3>
+            <p class="location-type-table-subtitle">Manage your existing location categories</p>
+        </div>
 
-<br />
-
-<h3 class="mb-4 text-center">All Location Types</h3>
-
-<div class="table-responsive">
-    <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-        <thead style="background-color: #14ae64; box-shadow: none;">
-            <tr style="color: white">
-                <th>Name</th>
-                <th>Delete The Type</th>
-            </tr>
-        </thead>
-        <tbody id="locationTableBody">
-            @await Html.PartialAsync("_LocationTypeTable", Model.AllTypes)
-        </tbody>
-    </table>
+        <div class="location-type-table-container">
+            <table class="location-type-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="locationTableBody">
+                @await Html.PartialAsync("_LocationTypeTable", Model.AllTypes)
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
+<style>
+    .location-type-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Form Section */
+    .location-type-form-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: locationSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes locationSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .location-type-form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .location-type-form-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .location-type-form-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .location-type-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .location-type-input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .location-type-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .location-type-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .location-type-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .location-type-error {
+        display: block;
+        color: #e57373;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .location-type-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+    }
+
+    .location-type-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .location-type-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Table Section */
+    .location-type-table-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: locationSlideUp 0.8s ease-out;
+    }
+
+    .location-type-table-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .location-type-table-title {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .location-type-table-subtitle {
+        color: #7a9971;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    .location-type-table-container {
+        overflow-x: auto;
+    }
+
+    .location-type-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .location-type-table thead {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+    }
+
+    .location-type-table thead tr th {
+        padding: 1rem;
+        color: white;
+        font-weight: 600;
+        text-align: left;
+        font-size: 0.95rem;
+        border: none;
+    }
+
+    .location-type-table thead tr th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    .location-type-table thead tr th:last-child {
+        border-top-right-radius: 10px;
+        text-align: center;
+    }
+
+    .location-type-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .location-type-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .location-type-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .location-type-table tbody tr td {
+        padding: 1rem;
+        color: #2d5016;
+        font-size: 0.95rem;
+    }
+
+    .location-type-table tbody tr td:last-child {
+        text-align: center;
+    }
+
+    /* Editable Input in Table */
+    .location-type-table .type-text {
+        font-weight: 500;
+        color: #2d5016;
+    }
+
+    .location-type-table .type-input {
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #66bb6a;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .location-type-table .type-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+    }
+
+    /* Action Buttons */
+    .location-type-table .d-inline-flex {
+        display: inline-flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .location-type-table .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .location-type-table .btn-sm {
+        padding: 0.4rem 0.875rem;
+        font-size: 0.85rem;
+    }
+
+    .location-type-table .btn-warning {
+        background: linear-gradient(135deg, #ffa726 0%, #ffb74d 100%);
+        color: white;
+    }
+
+    .location-type-table .btn-warning:hover {
+        background: linear-gradient(135deg, #fb8c00 0%, #ffa726 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(255, 167, 38, 0.3);
+    }
+
+    .location-type-table .btn-success {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+    }
+
+    .location-type-table .btn-success:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(102, 187, 106, 0.3);
+    }
+
+    .location-type-table .btn-danger {
+        background: linear-gradient(135deg, #ef5350 0%, #e57373 100%);
+        color: white;
+    }
+
+    .location-type-table .btn-danger:hover {
+        background: linear-gradient(135deg, #e53935 0%, #ef5350 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(239, 83, 80, 0.3);
+    }
+
+    .location-type-table .d-none {
+        display: none !important;
+    }
+
+    .location-type-table .gap-1 {
+        gap: 0.5rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .location-type-form-wrapper,
+        .location-type-table-wrapper {
+            padding: 1.5rem;
+        }
+
+        .location-type-form-title,
+        .location-type-table-title {
+            font-size: 1.5rem;
+        }
+
+        .location-type-table {
+            font-size: 0.875rem;
+        }
+
+        .location-type-table thead tr th,
+        .location-type-table tbody tr td {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .location-type-table .btn-sm {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .location-type-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .location-type-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .location-type-table {
+            min-width: 500px;
+        }
+    }
+</style>
+
 <script>
-    //  Handle Add
+    // Handle Add
     document.getElementById("locationForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
@@ -78,7 +414,7 @@
         }
     });
 
-    // 🔹 Handle Delete — same style as TreeType
+    // Handle Delete
     async function deleteType(id, name) {
         if (!confirm(`Are you sure you want to delete: ${name}?`)) return;
 
@@ -93,36 +429,28 @@
             const contentType = (response.headers.get("content-type") || "").toLowerCase();
 
             if (contentType.includes("application/json")) {
-                // Backend returned JSON -> deletion failed
                 const data = await response.json();
-                alert(data.message || "❌ Cannot delete this item.");
+                alert(data.message || "Cannot delete this item.");
             } else {
-                // Backend returned HTML -> deletion succeeded
                 const html = await response.text();
                 document.querySelector("#locationTableBody").innerHTML = html;
             }
         } else {
             const errText = await response.text();
-            alert(errText || "❌ Error deleting location type.");
+            alert(errText || "Error deleting location type.");
         }
     }
 
-
-
-
-</script>
-
-<script>
-    // 🔹 Enable editing
+    // Enable editing
     function editLocationType(id) {
         const row = document.getElementById(`row-${id}`);
         row.querySelector(".type-text").classList.add("d-none");
         row.querySelector(".type-input").classList.remove("d-none");
-        row.querySelector(".btn-warning").classList.add("d-none"); // hide Edit
-        row.querySelector(".btn-success").classList.remove("d-none"); // show Save
+        row.querySelector(".btn-warning").classList.add("d-none");
+        row.querySelector(".btn-success").classList.remove("d-none");
     }
 
-    // 🔹 Save edited value
+    // Save edited value
     async function saveLocationType(id) {
         const row = document.getElementById(`row-${id}`);
         const newValue = row.querySelector(".type-input").value.trim();
@@ -149,5 +477,4 @@
             alert("Error updating location type.");
         }
     }
-
 </script>

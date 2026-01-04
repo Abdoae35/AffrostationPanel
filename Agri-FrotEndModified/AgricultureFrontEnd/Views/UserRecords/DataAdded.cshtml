@@ -5,39 +5,377 @@
     Layout = "_Layout";
 }
 
-<h3 class="mb-4 text-center">Your Planting Records (Last 30 Days)</h3>
+<div class="user-records-container">
+    <!-- Header -->
+    <div class="user-records-header">
+        <h2 class="user-records-title">Your Planting Records</h2>
+        <p class="user-records-subtitle">Last 30 days of afforestation activities</p>
+    </div>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-warning text-center shadow-sm">
-        <strong>No records found</strong> in the last 30 days.
-    </div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-            <thead style="background-color: #14ae64; box-shadow: none;">
-            <tr style="color: white">
-                <th>Date Planted</th>
-                <th>Tree Name</th>
-                <th>Location Name</th>
-                <th>Number</th>
-                <th>User Name</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.DateOfPlanted.ToString("yyyy-MM-dd")</td>
-                    <td>@item.TreeName</td>
-                    <td>@item.LocationName</td>
-                    <td>@item.Number</td>
-                    <td>@item.UserName</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-}
+    @if (Model == null || !Model.Any())
+    {
+        <!-- Empty State -->
+        <div class="user-records-empty">
+            <svg class="user-records-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3>No Records Found</h3>
+            <p>You haven't added any planting records in the last 30 days.</p>
+            <a asp-controller="AddPlant" asp-action="Create" class="user-records-add-btn">
+                <svg class="user-records-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>Add Your First Record</span>
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Summary Card -->
+        <div class="user-records-summary">
+            <div class="user-records-summary-item">
+                <div class="user-records-summary-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="user-records-summary-text">
+                    <p class="user-records-summary-label">Total Records</p>
+                    <h3 class="user-records-summary-value">@Model.Count</h3>
+                </div>
+            </div>
+
+            <div class="user-records-summary-item">
+                <div class="user-records-summary-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                </div>
+                <div class="user-records-summary-text">
+                    <p class="user-records-summary-label">Total Plants</p>
+                    <h3 class="user-records-summary-value">@Model.Sum(x => x.Number)</h3>
+                </div>
+            </div>
+
+            <div class="user-records-summary-item">
+                <div class="user-records-summary-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="user-records-summary-text">
+                    <p class="user-records-summary-label">Period</p>
+                    <h3 class="user-records-summary-value">30 Days</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Table -->
+        <div class="user-records-table-wrapper">
+            <div class="user-records-table-container">
+                <table class="user-records-table">
+                    <thead>
+                        <tr>
+                            <th>Date Planted</th>
+                            <th>Plant Name</th>
+                            <th>Location</th>
+                            <th>Quantity</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.DateOfPlanted.ToString("yyyy-MM-dd")</td>
+                                <td>@item.TreeName</td>
+                                <td>@item.LocationName</td>
+                                <td class="user-records-quantity">@item.Number</td>
+                                <td>@item.UserName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .user-records-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Header */
+    .user-records-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: userRecordsSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes userRecordsSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .user-records-title {
+        color: #2d5016;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-records-subtitle {
+        color: #7a9971;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    /* Empty State */
+    .user-records-empty {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: userRecordsSlideUp 0.7s ease-out;
+    }
+
+    .user-records-empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        color: #a5d6a7;
+        stroke-width: 1.5;
+    }
+
+    .user-records-empty h3 {
+        color: #2d5016;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-records-empty p {
+        color: #7a9971;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+    }
+
+    .user-records-add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+    }
+
+    .user-records-add-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .user-records-add-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Summary Cards */
+    .user-records-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        animation: userRecordsSlideUp 0.7s ease-out;
+    }
+
+    .user-records-summary-item {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .user-records-summary-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(45, 80, 22, 0.12);
+    }
+
+    .user-records-summary-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .user-records-summary-icon svg {
+        width: 30px;
+        height: 30px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .user-records-summary-text {
+        flex: 1;
+    }
+
+    .user-records-summary-label {
+        color: #7a9971;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .user-records-summary-value {
+        color: #2d5016;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Table */
+    .user-records-table-wrapper {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: userRecordsSlideUp 0.8s ease-out;
+    }
+
+    .user-records-table-container {
+        overflow-x: auto;
+    }
+
+    .user-records-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .user-records-table thead tr th {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        font-weight: 600;
+        text-align: left;
+        padding: 1rem;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+    .user-records-table thead tr th:first-child {
+        border-top-left-radius: 14px;
+    }
+
+    .user-records-table thead tr th:last-child {
+        border-top-right-radius: 14px;
+    }
+
+    .user-records-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .user-records-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .user-records-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .user-records-table tbody tr td {
+        padding: 0.875rem 1rem;
+        color: #2d5016;
+        font-size: 0.9rem;
+    }
+
+    .user-records-quantity {
+        font-weight: 700;
+        color: #4a7c3e;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .user-records-title {
+            font-size: 1.5rem;
+        }
+
+        .user-records-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .user-records-table {
+            font-size: 0.85rem;
+        }
+
+        .user-records-table thead tr th,
+        .user-records-table tbody tr td {
+            padding: 0.625rem 0.75rem;
+        }
+
+        .user-records-summary-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .user-records-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .user-records-empty {
+            padding: 3rem 1.5rem;
+        }
+
+        .user-records-table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .user-records-table {
+            min-width: 600px;
+        }
+
+        .user-records-summary-item {
+            padding: 1.5rem;
+        }
+
+        .user-records-summary-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .user-records-summary-icon svg {
+            width: 25px;
+            height: 25px;
+        }
+    }
+</style>

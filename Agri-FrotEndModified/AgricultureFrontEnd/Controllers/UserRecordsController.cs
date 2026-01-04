@@ -14,7 +14,7 @@ namespace AgricultureFrontEnd.Controllers
         public UserRecordsController(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new Uri("https://localhost:7197/");
+            _client.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
         }
 
         public async Task<IActionResult> DataAdded()

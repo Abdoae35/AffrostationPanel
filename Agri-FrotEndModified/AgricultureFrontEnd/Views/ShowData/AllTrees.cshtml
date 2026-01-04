@@ -6,55 +6,544 @@
     var groupedTrees = Model.GroupBy(t => t.Type);
 }
 
-<!-- ✅ TYPE BUTTONS CARD -->
-<div class="card shadow-sm border-0 mx-auto mt-4" style="max-width: 600px; border-radius: 15px;">
-    <div class="card-body text-center">
-        <h5 class="fw-bold mb-3" style="color:#14ae64;">🌿 أنواع النباتات</h5>
+<div class="trees-container">
+    <!-- Header -->
+    <div class="trees-header">
+        <h2 class="trees-title">All Plants</h2>
+        <p class="trees-subtitle">Browse and manage plants by type</p>
+    </div>
 
-        <div class="d-flex justify-content-center flex-wrap gap-2">
+    <!-- Type Selection Card -->
+    <div class="trees-types-card">
+        <div class="trees-types-header">
+            <svg class="trees-types-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            <h3 class="trees-types-title">أنواع النباتات</h3>
+        </div>
+
+        <div class="trees-types-buttons">
             @foreach (var type in groupedTrees)
             {
-                <button type="button" class="btn tree-type-btn"
+                <button type="button" class="tree-type-btn"
                         data-typeid="@type.First().TypeId"
-                        style="color:#14ae64; border:1px solid #14ae64; background-color:white; min-width:80px;">
+                        data-typename="@type.Key">
                     @type.Key
                 </button>
             }
         </div>
     </div>
+
+    <!-- Data Container -->
+    <div id="treeDataContainer" class="trees-data-container">
+        <div class="trees-empty-state">
+            <svg class="trees-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+            <p>اختر نوع النبات لعرض التفاصيل</p>
+        </div>
+    </div>
 </div>
 
-<!-- ✅ CONTAINER FOR LOADED TREES -->
-<div id="treeDataContainer" class="mt-4 text-center">
-    <p class="text-muted">اختر نوع النبات لعرض التفاصيل 🌱</p>
-</div>
-
-<!-- ✅ ADD TREE MODAL (unchanged from old one) -->
+<!-- Add Tree Modal -->
 <div class="modal fade" id="addTreeModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content shadow-lg">
-            <div class="modal-header">
-                <h5 class="modal-title text-success">➕ اضافة نبات جديد</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content trees-modal">
+            <div class="modal-header trees-modal-header">
+                <h5 class="modal-title">
+                    <svg class="trees-modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    اضافة نبات جديد
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body trees-modal-body">
                 <input type="hidden" id="treeTypeInput" />
-                <div class="mb-3">
-                    <label class="form-label">🌿 اسم النبات</label>
-                    <input type="text" class="form-control" id="newTreeName" />
+                
+                <div class="trees-modal-group">
+                    <label class="trees-modal-label">اسم النبات</label>
+                    <input type="text" class="trees-modal-input" id="newTreeName" placeholder="Enter plant name..." />
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">🔬 الاسم العلمي</label>
-                    <input type="text" class="form-control" id="newScientificName" />
+
+                <div class="trees-modal-group">
+                    <label class="trees-modal-label">الاسم العلمي</label>
+                    <input type="text" class="trees-modal-input" id="newScientificName" placeholder="Enter scientific name..." />
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
-                <button class="btn btn-success" id="saveTreeBtn">حفظ</button>
+            <div class="modal-footer trees-modal-footer">
+                <button class="trees-modal-btn trees-modal-btn-cancel" data-bs-dismiss="modal">اغلاق</button>
+                <button class="trees-modal-btn trees-modal-btn-save" id="saveTreeBtn">حفظ</button>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .trees-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    /* Header */
+    .trees-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: treesSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes treesSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .trees-title {
+        color: #2d5016;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .trees-subtitle {
+        color: #7a9971;
+        font-size: 1.05rem;
+        margin: 0;
+    }
+
+    /* Types Card */
+    .trees-types-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        animation: treesSlideUp 0.7s ease-out;
+    }
+
+    .trees-types-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .trees-types-icon {
+        width: 28px;
+        height: 28px;
+        color: #66bb6a;
+        stroke-width: 2.5;
+    }
+
+    .trees-types-title {
+        color: #2d5016;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .trees-types-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+    }
+
+    .tree-type-btn {
+        padding: 0.75rem 1.5rem;
+        background: white;
+        color: #66bb6a;
+        border: 2px solid #66bb6a;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        min-width: 120px;
+    }
+
+    .tree-type-btn:hover {
+        background: #f8fdf9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.2);
+    }
+
+    .tree-type-btn.active {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border-color: #66bb6a;
+    }
+
+    /* Data Container */
+    .trees-data-container {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        min-height: 300px;
+        animation: treesSlideUp 0.8s ease-out;
+    }
+
+    .trees-empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #7a9971;
+    }
+
+    .trees-empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        opacity: 0.3;
+        stroke-width: 1.5;
+    }
+
+    .trees-empty-state p {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* Tree Table */
+    .trees-table-wrapper {
+        animation: treesSlideUp 0.5s ease-out;
+    }
+
+    .trees-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .trees-table thead tr th {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        font-weight: 600;
+        padding: 1rem;
+        border: none;
+    }
+
+    .trees-table thead tr:first-child th {
+        border-top-left-radius: 14px;
+        border-top-right-radius: 14px;
+    }
+
+    .trees-table-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .trees-table-type-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    .trees-add-btn {
+        padding: 0.5rem 1rem;
+        background: white;
+        color: #66bb6a;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .trees-add-btn:hover {
+        background: #f8fdf9;
+        transform: scale(1.05);
+    }
+
+    .trees-add-icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.5;
+    }
+
+    .trees-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #f0f9f4;
+    }
+
+    .trees-table tbody tr:hover {
+        background: #f8fdf9;
+    }
+
+    .trees-table tbody tr td {
+        padding: 1rem;
+        color: #2d5016;
+    }
+
+    .trees-table tbody tr td:last-child {
+        text-align: center;
+    }
+
+    .trees-scientific-name {
+        font-style: italic;
+        color: #5d7c50;
+    }
+
+    .trees-edit-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 2px solid #66bb6a;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .trees-edit-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.2);
+    }
+
+    /* Action Buttons */
+    .trees-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .trees-action-btn {
+        padding: 0.5rem 0.875rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .trees-btn-edit {
+        background: #fff8e1;
+        color: #ffa726;
+    }
+
+    .trees-btn-edit:hover {
+        background: #ffa726;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .trees-btn-save {
+        background: #e8f5e9;
+        color: #66bb6a;
+    }
+
+    .trees-btn-save:hover {
+        background: #66bb6a;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .trees-btn-cancel {
+        background: #f5f5f5;
+        color: #757575;
+    }
+
+    .trees-btn-cancel:hover {
+        background: #e0e0e0;
+        transform: translateY(-1px);
+    }
+
+    .trees-btn-delete {
+        background: #ffebee;
+        color: #ef5350;
+    }
+
+    .trees-btn-delete:hover {
+        background: #ef5350;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .d-none {
+        display: none !important;
+    }
+
+    /* Modal Styling */
+    .trees-modal {
+        border-radius: 16px;
+        border: none;
+    }
+
+    .trees-modal-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border-bottom: none;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .trees-modal-header .modal-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .trees-modal-icon {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2.5;
+    }
+
+    .trees-modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .trees-modal-body {
+        padding: 2rem;
+    }
+
+    .trees-modal-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .trees-modal-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .trees-modal-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .trees-modal-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .trees-modal-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .trees-modal-footer {
+        border-top: 1px solid #f0f9f4;
+        padding: 1.5rem;
+    }
+
+    .trees-modal-btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .trees-modal-btn-cancel {
+        background: #f5f5f5;
+        color: #757575;
+    }
+
+    .trees-modal-btn-cancel:hover {
+        background: #e0e0e0;
+    }
+
+    .trees-modal-btn-save {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+    }
+
+    .trees-modal-btn-save:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+    }
+
+    .trees-modal-btn-save:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Alert Styles */
+    .trees-alert {
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        animation: treesSlideUp 0.5s ease-out;
+    }
+
+    .trees-alert-warning {
+        background: #fff8e1;
+        border: 2px solid #ffa726;
+        color: #f57c00;
+    }
+
+    .trees-alert-danger {
+        background: #ffebee;
+        border: 2px solid #ef5350;
+        color: #c62828;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .trees-title {
+            font-size: 1.5rem;
+        }
+
+        .trees-types-card,
+        .trees-data-container {
+            padding: 1.5rem;
+        }
+
+        .tree-type-btn {
+            min-width: 100px;
+            padding: 0.625rem 1.25rem;
+        }
+
+        .trees-table-header-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .trees-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .trees-types-buttons {
+            flex-direction: column;
+        }
+
+        .tree-type-btn {
+            width: 100%;
+        }
+
+        .trees-actions {
+            flex-direction: column;
+        }
+
+        .trees-action-btn {
+            width: 100%;
+        }
+    }
+</style>
 
 @section Scripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -67,11 +556,11 @@
     // When user clicks a Type Button
     $(document).on("click", ".tree-type-btn", function () {
         currentTypeId = $(this).data("typeid");
-        currentTypeName = $(this).text().trim();
+        currentTypeName = $(this).data("typename");
 
-        // Highlight selected and mark active
-        $(".tree-type-btn").removeClass("active").css("background-color", "white").css("color", "#14ae64");
-        $(this).addClass("active").css("background-color", "#14ae64").css("color", "white");
+        // Highlight selected button
+        $(".tree-type-btn").removeClass("active");
+        $(this).addClass("active");
 
         // Fetch data via AJAX
         $.ajax({
@@ -81,48 +570,50 @@
                 if (res.success) {
                     renderTreeTable(res.data);
                 } else {
-                    $("#treeDataContainer").html(`<div class='alert alert-danger'>${res.message}</div>`);
+                    $("#treeDataContainer").html(`<div class='trees-alert trees-alert-danger'>${res.message}</div>`);
                 }
             },
             error: function () {
-                $("#treeDataContainer").html(`<div class='alert alert-danger'>❌ حدث خطأ أثناء تحميل البيانات</div>`);
+                $("#treeDataContainer").html(`<div class='trees-alert trees-alert-danger'>حدث خطأ أثناء تحميل البيانات</div>`);
             }
         });
     });
 
-    // Render Tree Table (unchanged)
+    // Render Tree Table
     function renderTreeTable(trees) {
         if (trees.length === 0) {
-            $("#treeDataContainer").html(`<div class='alert alert-warning text-center'>⚠️ لا توجد نباتات من هذا النوع</div>`);
+            $("#treeDataContainer").html(`<div class='trees-alert trees-alert-warning text-center'>لا توجد نباتات من هذا النوع</div>`);
             return;
         }
 
         let rows = trees.map(t => `
             <tr data-id="${t.id}">
-                <td>${t.name}</td>
-                <td>${t.scientificName}</td>
+                <td class="tree-name-cell">${t.name}</td>
+                <td class="tree-scientific-cell trees-scientific-name">${t.scientificName}</td>
                 <td>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <button class="btn btn-warning btn-sm edit-tree" data-id="${t.id}">تعديل</button>
-                        <button class="btn btn-success btn-sm save-tree d-none" data-id="${t.id}">حفظ</button>
-                        <button class="btn btn-secondary btn-sm cancel-edit d-none">الغاء</button>
-                        <button class="btn btn-danger btn-sm delete-tree" data-id="${t.id}">حذف</button>
+                    <div class="trees-actions">
+                        <button class="trees-action-btn trees-btn-edit edit-tree" data-id="${t.id}">تعديل</button>
+                        <button class="trees-action-btn trees-btn-save save-tree d-none" data-id="${t.id}">حفظ</button>
+                        <button class="trees-action-btn trees-btn-cancel cancel-edit d-none">الغاء</button>
+                        <button class="trees-action-btn trees-btn-delete delete-tree" data-id="${t.id}">حذف</button>
                     </div>
                 </td>
             </tr>
         `).join("");
 
         let html = `
-            <div class="table-responsive mx-auto" style="max-width: 600px;">
-                <table class="table table-hover table-bordered align-middle text-center shadow-sm">
-                    <thead style="background-color: #14ae64; color:white;">
+            <div class="trees-table-wrapper">
+                <table class="trees-table">
+                    <thead>
                         <tr>
-                            <th colspan="3" class="p-2 w-100">
-                                <div class="d-flex justify-content-center align-items-center position-relative w-100">
-                                    <span class="fw-bold mx-auto">${currentTypeName}</span>
-                                    <button class="btn btn-light btn-sm text-success add-tree-btn position-absolute end-0 me-2"
-                                            data-typeid="${currentTypeId}" data-typename="${currentTypeName}">
-                                        ➕ اضافة نبات
+                            <th colspan="3">
+                                <div class="trees-table-header-content">
+                                    <span class="trees-table-type-name">${currentTypeName}</span>
+                                    <button class="trees-add-btn add-tree-btn" data-typeid="${currentTypeId}" data-typename="${currentTypeName}">
+                                        <svg class="trees-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                        </svg>
+                                        اضافة نبات
                                     </button>
                                 </div>
                             </th>
@@ -139,9 +630,8 @@
         $("#treeDataContainer").html(html);
     }
 
-    // Add New Tree Modal — make sure we set currentTypeId when opening modal
+    // Add New Tree Modal
     $(document).on("click", ".add-tree-btn", function () {
-        // set current type id and name from the clicked add button (table header add)
         currentTypeId = $(this).data("typeid") || currentTypeId;
         currentTypeName = $(this).data("typename") || currentTypeName;
 
@@ -151,18 +641,18 @@
         new bootstrap.Modal(document.getElementById('addTreeModal')).show();
     });
 
-    // Save New Tree — hide modal properly and reload by type id
+    // Save New Tree
     $("#saveTreeBtn").click(function () {
         let name = $("#newTreeName").val().trim();
         let scientific = $("#newScientificName").val().trim();
         let typeName = $("#treeTypeInput").val();
 
         if (name === "" || scientific === "") {
-            alert("⚠️ يجب ادخال الاسم والاسم العلمي");
+            alert("يجب ادخال الاسم والاسم العلمي");
             return;
         }
 
-        // disable button to prevent double clicks
+        // Disable button to prevent double clicks
         $(this).prop("disabled", true);
 
         $.ajax({
@@ -177,57 +667,54 @@
             success: function (res) {
                 $("#saveTreeBtn").prop("disabled", false);
                 if (res.success) {
-                    // Properly hide the currently open modal instance
                     const modalEl = document.getElementById('addTreeModal');
                     const modalInstance = bootstrap.Modal.getInstance(modalEl);
                     if (modalInstance) {
                         modalInstance.hide();
                     } else {
-                        // fallback: create and hide (rare)
                         new bootstrap.Modal(modalEl).hide();
                     }
 
-                    // Refresh the current type table — use typeid (preferred) if available
                     if (currentTypeId && $(".tree-type-btn[data-typeid='" + currentTypeId + "']").length) {
                         $(".tree-type-btn[data-typeid='" + currentTypeId + "']").click();
                     } else {
-                        // fallback: reload the selected active button if any
                         $(".tree-type-btn.active").click();
                     }
                 } else {
-                    alert(res.message || "❌ فشل اضافة النبات");
+                    alert(res.message || "فشل اضافة النبات");
                 }
             },
             error: function () {
                 $("#saveTreeBtn").prop("disabled", false);
-                alert("❌ حدث خطأ في الاتصال بالخادم");
+                alert("حدث خطأ في الاتصال بالخادم");
             }
         });
     });
 
-    // Edit, cancel and save handlers — small fix for cancel to use .active
+    // Edit Tree
     $(document).on("click", ".edit-tree", function () {
         let row = $(this).closest("tr");
-        let name = row.find("td:eq(0)").text().trim();
-        let scientific = row.find("td:eq(1)").text().trim();
+        let name = row.find(".tree-name-cell").text().trim();
+        let scientific = row.find(".tree-scientific-cell").text().trim();
 
-        row.find("td:eq(0)").html(`<input type="text" class="form-control new-name" value="${name}" />`);
-        row.find("td:eq(1)").html(`<input type="text" class="form-control new-scientific" value="${scientific}" />`);
+        row.find(".tree-name-cell").html(`<input type="text" class="trees-edit-input new-name" value="${name}" />`);
+        row.find(".tree-scientific-cell").html(`<input type="text" class="trees-edit-input new-scientific" value="${scientific}" />`);
         row.find(".edit-tree, .delete-tree").addClass("d-none");
         row.find(".save-tree, .cancel-edit").removeClass("d-none");
     });
 
+    // Cancel Edit
     $(document).on("click", ".cancel-edit", function () {
-        // reload the current active type (if exists)
         if ($(".tree-type-btn.active").length) {
             $(".tree-type-btn.active").click();
         } else if (currentTypeId) {
             $(".tree-type-btn[data-typeid='" + currentTypeId + "']").click();
         } else {
-            location.reload(); // fallback
+            location.reload();
         }
     });
 
+    // Save Tree
     $(document).on("click", ".save-tree", function () {
         let row = $(this).closest("tr");
         let id = $(this).data("id");
@@ -235,7 +722,7 @@
         let scientific = row.find(".new-scientific").val().trim();
 
         if (name === "" || scientific === "") {
-            alert("⚠️ لا يمكن ترك الاسم أو الاسم العلمي فارغًا");
+            alert("لا يمكن ترك الاسم أو الاسم العلمي فارغًا");
             return;
         }
 
@@ -246,18 +733,18 @@
             data: JSON.stringify({ Id: id, Name: name, ScientificName: scientific }),
             success: function (res) {
                 if (res.success) {
-                    // refresh current type table
                     if (currentTypeId) $(".tree-type-btn[data-typeid='" + currentTypeId + "']").click();
                 } else {
-                    alert(res.message || "❌ فشل التحديث");
+                    alert(res.message || "فشل التحديث");
                 }
             },
             error: function () {
-                alert("❌ حدث خطأ أثناء تحديث النبات");
+                alert("حدث خطأ أثناء تحديث النبات");
             }
         });
     });
 
+    // Delete Tree
     $(document).on("click", ".delete-tree", function () {
         let id = $(this).data("id");
         if (confirm("هل تريد حذف هذا النبات؟")) {
@@ -275,5 +762,4 @@
         }
     });
 </script>
-
 }

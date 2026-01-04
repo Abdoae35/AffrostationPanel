@@ -5,74 +5,485 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg border-0 rounded-3" style="max-width: 600px; margin: auto;">
-        <div class="card-header text-white fw-bold text-center" style="background-color: #14ae64;">
-            📍 Add New Location
+<div class="add-location-container">
+    <div class="add-location-card">
+        <div class="add-location-header">
+            <h2 class="add-location-title">Add New Location</h2>
+            <p class="add-location-subtitle">Register a new location for your afforestation project</p>
         </div>
-        <div class="card-body p-4">
+
+        <div class="add-location-body">
+            <!-- Success Message -->
             @if (TempData["Success"] != null)
             {
-                <div class="alert alert-success text-center py-2">
-                    @TempData["Success"]
+                <div class="add-location-alert add-location-alert-success">
+                    <div class="add-location-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="add-location-alert-content">
+                        <strong class="add-location-alert-title">Success!</strong>
+                        <p class="add-location-alert-message">@TempData["Success"]</p>
+                    </div>
                 </div>
             }
+
+            <!-- Error Message -->
             @if (TempData["Error"] != null)
             {
-                <div class="alert alert-danger text-center py-2">
-                    @TempData["Error"]
+                <div class="add-location-alert add-location-alert-error">
+                    <div class="add-location-alert-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="add-location-alert-content">
+                        <strong class="add-location-alert-title">Error!</strong>
+                        <p class="add-location-alert-message">@TempData["Error"]</p>
+                    </div>
                 </div>
             }
-            <form asp-action="Create" method="post" onsubmit="return validateForm();">
+
+            <form asp-action="Create" method="post" onsubmit="return validateLocationForm();" class="add-location-form">
                 @Html.AntiForgeryToken()
 
                 <!-- Location Name -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Location Name</label>
-                    <input asp-for="Name" class="form-control" id="locationNameInput" placeholder="Enter location name..."/>
-                    <span asp-validation-for="Name" class="text-danger small"></span>
-                    <span id="nameError" class="text-danger small" style="display:none;">Cannot be empty.</span>
+                <div class="add-location-form-group">
+                    <label class="add-location-label">Location Name</label>
+                    <input asp-for="Name" 
+                           class="add-location-input" 
+                           id="locationNameInput" 
+                           placeholder="Enter location name..."/>
+                    <span asp-validation-for="Name" class="add-location-validation-error"></span>
+                    <div id="nameError" class="add-location-error-message">
+                        <svg class="add-location-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Location name cannot be empty.</span>
+                    </div>
                 </div>
 
                 <!-- Location Type -->
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">Select Location Type</label>
-                    <select asp-for="LocationType" asp-items="ViewBag.TypesList" class="form-select" id="locationTypeSelect">
-                        <option value="">-- Please select an option --</option>
-                    </select>
-                    <span asp-validation-for="LocationType" class="text-danger small"></span>
-                    <span id="typeError" class="text-danger small" style="display:none;">You must select a Location Type.</span>
+                <div class="add-location-form-group">
+                    <label class="add-location-label">Select Location Type</label>
+                    <div class="add-location-select-wrapper">
+                        <select asp-for="LocationType" 
+                                asp-items="ViewBag.TypesList" 
+                                class="add-location-select" 
+                                id="locationTypeSelect">
+                            <option value="">-- Please select an option --</option>
+                        </select>
+                        <div class="add-location-select-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span asp-validation-for="LocationType" class="add-location-validation-error"></span>
+                    <div id="typeError" class="add-location-error-message">
+                        <svg class="add-location-error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>You must select a location type.</span>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn w-100 fw-bold text-white" style="background-color: #14ae64;">
-                    Submit
+                <button type="submit" class="add-location-submit-btn">
+                    <span>Add Location</span>
+                    <svg class="add-location-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                 </button>
             </form>
         </div>
     </div>
 </div>
 
+<style>
+    .add-location-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .add-location-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.08);
+        border: 2px solid #f0f9f4;
+        overflow: hidden;
+        animation: addLocationSlideUp 0.6s ease-out;
+    }
+
+    @@keyframes addLocationSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .add-location-header {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .add-location-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .add-location-subtitle {
+        font-size: 1rem;
+        margin: 0;
+        opacity: 0.95;
+    }
+
+    .add-location-body {
+        padding: 2.5rem;
+    }
+
+    /* Alert Messages */
+    .add-location-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        animation: addLocationAlertSlide 0.5s ease-out;
+    }
+
+    @@keyframes addLocationAlertSlide {
+        from {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .add-location-alert-success {
+        background: #e8f5e9;
+        border: 2px solid #81c784;
+    }
+
+    .add-location-alert-error {
+        background: #ffebee;
+        border: 2px solid #ef5350;
+    }
+
+    .add-location-alert-icon {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+    }
+
+    .add-location-alert-success .add-location-alert-icon {
+        color: #66bb6a;
+    }
+
+    .add-location-alert-error .add-location-alert-icon {
+        color: #ef5350;
+    }
+
+    .add-location-alert-icon svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    .add-location-alert-content {
+        flex: 1;
+    }
+
+    .add-location-alert-title {
+        display: block;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .add-location-alert-success .add-location-alert-title {
+        color: #2d5016;
+    }
+
+    .add-location-alert-error .add-location-alert-title {
+        color: #c62828;
+    }
+
+    .add-location-alert-message {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+    .add-location-alert-success .add-location-alert-message {
+        color: #4a7c3e;
+    }
+
+    .add-location-alert-error .add-location-alert-message {
+        color: #d32f2f;
+    }
+
+    /* Form */
+    .add-location-form {
+        margin-top: 0;
+    }
+
+    .add-location-form-group {
+        margin-bottom: 1.75rem;
+    }
+
+    .add-location-label {
+        display: block;
+        color: #2d5016;
+        font-weight: 600;
+        margin-bottom: 0.625rem;
+        font-size: 0.95rem;
+    }
+
+    .add-location-input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .add-location-input:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    /* Select Dropdown */
+    .add-location-select-wrapper {
+        position: relative;
+    }
+
+    .add-location-select {
+        width: 100%;
+        padding: 0.875rem 2.5rem 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .add-location-select:focus {
+        outline: none;
+        border-color: #66bb6a;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 187, 106, 0.1);
+    }
+
+    .add-location-select-arrow {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: #7a9971;
+        pointer-events: none;
+    }
+
+    .add-location-select-arrow svg {
+        width: 100%;
+        height: 100%;
+        stroke-width: 2.5;
+    }
+
+    /* Error Messages */
+    .add-location-validation-error {
+        display: block;
+        color: #ef5350;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .add-location-error-message {
+        display: none;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: #ffebee;
+        border: 1px solid #ef5350;
+        border-radius: 8px;
+        color: #d32f2f;
+        font-size: 0.875rem;
+        font-weight: 500;
+        animation: addLocationErrorShake 0.5s ease;
+    }
+
+    @@keyframes addLocationErrorShake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-5px);
+        }
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    .add-location-error-message.show {
+        display: flex;
+    }
+
+    .add-location-error-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        stroke-width: 2.5;
+    }
+
+    /* Submit Button */
+    .add-location-submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .add-location-submit-btn:hover {
+        background: linear-gradient(135deg, #5da961 0%, #72b876 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+    }
+
+    .add-location-submit-btn:active {
+        transform: translateY(0);
+    }
+
+    .add-location-btn-icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .add-location-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .add-location-title {
+            font-size: 1.5rem;
+        }
+
+        .add-location-subtitle {
+            font-size: 0.95rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .add-location-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .add-location-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .add-location-body {
+            padding: 1.5rem 1rem;
+        }
+
+        .add-location-input,
+        .add-location-select {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+        }
+
+        .add-location-select {
+            padding-right: 2.25rem;
+        }
+    }
+</style>
+
 <script>
-    function validateForm() {
+    function validateLocationForm() {
         const locationName = document.getElementById('locationNameInput').value.trim();
         const locationType = document.getElementById('locationTypeSelect').value;
 
         let isValid = true;
 
-        // Reset errors
-        document.getElementById('nameError').style.display = 'none';
-        document.getElementById('typeError').style.display = 'none';
+        // Get error message elements
+        const nameError = document.getElementById('nameError');
+        const typeError = document.getElementById('typeError');
 
+        // Reset errors
+        nameError.classList.remove('show');
+        typeError.classList.remove('show');
+
+        // Validate location name
         if (locationName === "") {
-            document.getElementById('nameError').style.display = 'block';
+            nameError.classList.add('show');
             isValid = false;
         }
 
+        // Validate location type
         if (locationType === "") {
-            document.getElementById('typeError').style.display = 'block';
+            typeError.classList.add('show');
             isValid = false;
         }
 
         return isValid;
     }
+
+    // Remove error messages when user starts typing
+    document.addEventListener('DOMContentLoaded', function() {
+        const nameInput = document.getElementById('locationNameInput');
+        const typeSelect = document.getElementById('locationTypeSelect');
+        const nameError = document.getElementById('nameError');
+        const typeError = document.getElementById('typeError');
+
+        if (nameInput) {
+            nameInput.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    nameError.classList.remove('show');
+                }
+            });
+        }
+
+        if (typeSelect) {
+            typeSelect.addEventListener('change', function() {
+                if (this.value !== '') {
+                    typeError.classList.remove('show');
+                }
+            });
+        }
+    });
 </script>
