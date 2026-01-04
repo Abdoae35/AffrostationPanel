@@ -12,7 +12,7 @@ public class ShowDataController : Controller
     public ShowDataController(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
+        _httpClient.BaseAddress = new Uri("https://localhost:7197/");
     }
     // Get All Tree With its type 
     public async Task<IActionResult> GetAllTreeWithTypeId(int typeId)

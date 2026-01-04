@@ -16,7 +16,7 @@ public class AddPlantController : Controller
     public AddPlantController(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
+        _httpClient.BaseAddress = new Uri("https://localhost:7197/");
     }
 
     // GET: Create form

@@ -12,14 +12,14 @@ public class UsersController : Controller
     {
         _httpClientFactory = httpClientFactory;
         _client = client;
-        _client.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
+        _client.BaseAddress = new Uri("https://localhost:7197/");
     }
 
     public async Task<IActionResult> ShowUsers()
     {
         using var client = _httpClientFactory.CreateClient();
         var response = await client.GetFromJsonAsync<List<UserReadVM>>(
-            "http://agricultureachievement.runasp.net/User/GetAll");
+            "https://localhost:7197/User/GetAll");
 
         return View(response);
     }
@@ -33,7 +33,7 @@ public class UsersController : Controller
     [HttpPost]
     public async Task<IActionResult> ResetPassword(UserUpdateVM vm)
     {
-        await _client.PutAsJsonAsync($"http://agricultureachievement.runasp.net/User/UpdateUser", vm);
+        await _client.PutAsJsonAsync($"https://localhost:7197/User/UpdateUser", vm);
         TempData["SuccessMessage"] = "Password was updated successfully!";
         return RedirectToAction(nameof(ShowUsers));
         
@@ -49,7 +49,7 @@ public class UsersController : Controller
         }
 
         using var client = _httpClientFactory.CreateClient();
-        var url = $"http://agricultureachievement.runasp.net/User/DeleteUser/{id}";
+        var url = $"https://localhost:7197/User/DeleteUser/{id}";
 
         var response = await client.DeleteAsync(url);
 
@@ -58,7 +58,7 @@ public class UsersController : Controller
             return BadRequest($"Failed to delete user with ID {id}.");
         }
 
-        var users = await client.GetFromJsonAsync<List<UserReadVM>>("http://agricultureachievement.runasp.net/User/GetAll");
+        var users = await client.GetFromJsonAsync<List<UserReadVM>>("https://localhost:7197/User/GetAll");
         return PartialView("_UsersTable", users ?? new List<UserReadVM>());
     }
 }

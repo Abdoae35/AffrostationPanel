@@ -30,7 +30,7 @@ public class AccountController : Controller
         var json = JsonSerializer.Serialize(dto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("http://agricultureachievement.runasp.net/User/Login/login", content);
+        var response = await client.PostAsync("https://localhost:7197/User/Login/login", content);
 
         if (response.IsSuccessStatusCode)
         {
