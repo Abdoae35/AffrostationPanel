@@ -8,25 +8,29 @@ A comprehensive web-based system for tracking and managing afforestation activit
 ![Login Page](screenShots/login.png)
 
 ### 🛠️ Admin Dashboard
-![Admin Dashboard](./screenshots/admin-dashboard.png)
+![Admin Dashboard](screenShots/adminDashBoard.png)
+
+### 👤 User Dashboard
+![User Dashboard](screenShots/UserDashBoard.png)
+
 
 ### 👤 Create New User
-![Create New User](./screenshots/create-user.png)
+![Create New User](screenShots/CreateNewUser.png)
 
 ### 🌍 Display Locations
-![Display Locations](./screenshots/display-location.png)
+![Display Locations](screenShots/DisplayTheLocation.png)
 
 ### 🌱 Display Plants
-![Display Plants](./screenshots/display-plants.png)
+![Display Plants](screenShots/DisplayThePlants.png)
 
 ### 🔎 Search Results
-![Search Result](./screenshots/search-result.png)
+![Search Result](screenShots/SearchResult.png)
 
 ### ⏳ Search With Duration
-![Search With Duration](./screenshots/search-with-duration.png)
+![Search With Duration](screenShots/SearchWith%20Duration.png)
 
 ### 📊 Summary Page
-![Summary Page](./screenshots/summary.png)
+![Summary Page](screenShots/Summary.png)
 
 > 📌 Replace the image paths above with your actual screenshot paths inside your repository.
 
