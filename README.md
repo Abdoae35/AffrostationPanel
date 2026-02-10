@@ -5,7 +5,7 @@ A comprehensive web-based system for tracking and managing afforestation activit
 ## 📸 Screenshots
 
 ### 🔐 Login Page
-![Login Page](AgriBackend/Agriculture.API/screenShots/login.png)
+![Login Page](screenShots/login.png)
 
 ### 🛠️ Admin Dashboard
 ![Admin Dashboard](./screenshots/admin-dashboard.png)
