@@ -2,6 +2,34 @@
 
 A comprehensive web-based system for tracking and managing afforestation activities across multiple locations. This project streamlines the process of recording, monitoring, and reporting tree planting operations, eliminating the manual Excel-based workflow and reducing data entry errors.
 
+## 📸 Screenshots
+
+### 🔐 Login Page
+![Login Page](AgriBackend/Agriculture.API/screenShots/login.png)
+
+### 🛠️ Admin Dashboard
+![Admin Dashboard](./screenshots/admin-dashboard.png)
+
+### 👤 Create New User
+![Create New User](./screenshots/create-user.png)
+
+### 🌍 Display Locations
+![Display Locations](./screenshots/display-location.png)
+
+### 🌱 Display Plants
+![Display Plants](./screenshots/display-plants.png)
+
+### 🔎 Search Results
+![Search Result](./screenshots/search-result.png)
+
+### ⏳ Search With Duration
+![Search With Duration](./screenshots/search-with-duration.png)
+
+### 📊 Summary Page
+![Summary Page](./screenshots/summary.png)
+
+> 📌 Replace the image paths above with your actual screenshot paths inside your repository.
+
 ## 🌳 Problem Statement
 
 Organizations involved in large-scale afforestation projects often face challenges when tracking planting activities across multiple locations and time periods. The traditional approach involves:
