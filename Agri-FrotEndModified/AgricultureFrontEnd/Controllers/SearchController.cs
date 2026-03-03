@@ -102,7 +102,7 @@ namespace AgricultureFrontEnd.Controllers
             
             var pageVm = new AfforestationPageVM
             {
-                TreeDetails = allData,  // send all results to front-end
+                TreeDetails = allData,  
                 CurrentPage = 1,
                 PageSize = pageSize,
                 TotalPages = (int)Math.Ceiling(allData.Count / (double)pageSize)
