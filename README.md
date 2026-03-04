@@ -2,39 +2,39 @@
 
 A comprehensive web-based system for tracking and managing afforestation activities across multiple locations. This project streamlines the process of recording, monitoring, and reporting tree planting operations, eliminating the manual Excel-based workflow and reducing data entry errors.
 
-## 📸 Screenshots
+##  Screenshots
 
-### 🔐 Login Page
+###  Login Page
 ![Login Page](screenShots/login.png)
 
-### 🛠️ Admin Dashboard
+###  Admin Dashboard
 ![Admin Dashboard](screenShots/adminDashBoard.png)
 
-### 👤 User Dashboard
+###  User Dashboard
 ![User Dashboard](screenShots/UserDashBoard.png)
 
 
-### 👤 Create New User
+###  Create New User
 ![Create New User](screenShots/CreateNewUser.png)
 
-### 🌍 Display Locations
+###  Display Locations
 ![Display Locations](screenShots/DisplayTheLocation.png)
 
-### 🌱 Display Plants
+###  Display Plants
 ![Display Plants](screenShots/DisplayThePlants.png)
 
-### 🔎 Search Results
+###  Search Results
 ![Search Result](screenShots/SearchResult.png)
 
-### ⏳ Search With Duration
+###  Search With Duration
 ![Search With Duration](screenShots/SearchWith%20Duration.png)
 
-### 📊 Summary Page
+###  Summary Page
 ![Summary Page](screenShots/Summary.png)
 
-> 📌 Replace the image paths above with your actual screenshot paths inside your repository.
+>  Replace the image paths above with your actual screenshot paths inside your repository.
 
-## 🌳 Problem Statement
+##  Problem Statement
 
 Organizations involved in large-scale afforestation projects often face challenges when tracking planting activities across multiple locations and time periods. The traditional approach involves:
 
@@ -46,7 +46,7 @@ Organizations involved in large-scale afforestation projects often face challeng
 
 **AfforestationPanel** solves these problems by providing a centralized, automated system that tracks all planting activities in real-time and generates reports for any custom duration instantly.
 
-## ✨ Features
+##  Features
 
 ### Admin Dashboard
 - Add, edit, and delete afforestation records
@@ -71,7 +71,7 @@ Organizations involved in large-scale afforestation projects often face challeng
 - No ability to modify database records
 - Perfect for company management and stakeholders
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Backend:** ASP.NET Web API (.NET Core/Framework)
 - **Frontend:** ASP.NET MVC
@@ -80,7 +80,7 @@ Organizations involved in large-scale afforestation projects often face challeng
 - **Database:** Entity Framework Core (Code First)
 - **ORM:** Entity Framework Core
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -89,7 +89,7 @@ Before you begin, ensure you have the following installed:
 - [Visual Studio](https://visualstudio.microsoft.com/) 2019/2022 or [Visual Studio Code](https://code.visualstudio.com/)
 - [Git](https://git-scm.com/)
 
-## 🚀 Installation
+##  Installation
 
 ### 1. Clone the Repository
 
@@ -141,7 +141,7 @@ Or press `F5` in Visual Studio to run with debugging.
 
 The application should now be running at `https://localhost:5001` (or the port specified in your launch settings).
 
-## 👥 User Roles
+##  User Roles
 
 ### Admin
 - Full system access
@@ -165,7 +165,7 @@ The application should now be running at `https://localhost:5001` (or the port s
 - Cannot modify or delete any records
 - Ideal for company executives and ministry stakeholders
 
-## 📊 Usage
+##  Usage
 
 ### Adding Afforestation Records (User/Admin)
 
@@ -206,7 +206,7 @@ AfforestationPanel/
 └── appsettings.json     # Configuration
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! If you'd like to contribute to this project:
 
@@ -216,11 +216,11 @@ Contributions are welcome! If you'd like to contribute to this project:
 4. Push to the branch (`git push origin feature/YourFeature`)
 5. Open a Pull Request
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📧 Contact
+##  Contact
 
 For questions, suggestions, or support, please contact:
 
@@ -228,11 +228,11 @@ For questions, suggestions, or support, please contact:
 - **Email:** Abdelrahman3535.elsheref@gmail.com
 - **GitHub:** [@Abdoae35](https://github.com/Abdoae35)
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Thanks to all field workers and environmental teams who inspired this project
 - Built to support sustainable afforestation efforts and environmental conservation
 
 ---
 
-**Made with 🌱 for a greener future**
+**Made with  for a greener future**
