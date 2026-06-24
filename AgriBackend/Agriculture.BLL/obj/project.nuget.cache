@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "nzWyD/rzLiI=",
+  "dgSpecHash": "qS0kO783+Nk=",
   "success": true,
   "projectFilePath": "/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.BLL/Agriculture.BLL.csproj",
   "expectedPackageFiles": [
@@ -59,8 +59,8 @@
     "/Users/macbookpro/.nuget/packages/system.text.json/4.7.2/system.text.json.4.7.2.nupkg.sha512",
     "/Users/macbookpro/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "/Users/macbookpro/.nuget/packages/system.windows.extensions/6.0.0/system.windows.extensions.6.0.0.nupkg.sha512",
-    "/Users/macbookpro/.nuget/packages/microsoft.netcore.app.ref/8.0.20/microsoft.netcore.app.ref.8.0.20.nupkg.sha512",
-    "/Users/macbookpro/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.20/microsoft.aspnetcore.app.ref.8.0.20.nupkg.sha512"
+    "/Users/macbookpro/.nuget/packages/microsoft.netcore.app.ref/8.0.27/microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
+    "/Users/macbookpro/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.27/microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512"
   ],
   "logs": []
 }

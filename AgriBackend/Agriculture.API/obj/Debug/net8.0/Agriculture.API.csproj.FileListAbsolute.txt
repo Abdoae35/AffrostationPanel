@@ -90,8 +90,13 @@
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Azure.Core.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Azure.Identity.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/BCrypt.Net-Next.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/ClosedXML.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/ClosedXML.Parser.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/cloudscribe.Pagination.Models.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/cloudscribe.Web.Pagination.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/DocumentFormat.OpenXml.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/DocumentFormat.OpenXml.Framework.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/ExcelNumberFormat.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
@@ -111,12 +116,15 @@
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.SqlServer.Server.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Microsoft.Win32.SystemEvents.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/RBush.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/SixLabors.Fonts.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.Configuration.ConfigurationManager.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.Drawing.Common.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.IO.Packaging.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.Memory.Data.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.Runtime.Caching.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/bin/Debug/net8.0/System.Security.Cryptography.ProtectedData.dll
@@ -155,6 +163,7 @@
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/staticwebassets.build.json.cache
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/staticwebassets.development.json
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/staticwebassets.build.endpoints.json
+/Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/swae.build.ex.cache
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/Agricult.628639E1.Up2Date
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/Agriculture.API.dll
 /Users/macbookpro/AhmedProject/Agriculture/AgriBackend/Agriculture.API/obj/Debug/net8.0/refint/Agriculture.API.dll

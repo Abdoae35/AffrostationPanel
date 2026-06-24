@@ -1,4 +1,5 @@
 using Agriculture.DAL.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,6 +8,7 @@ using System.Text;
 
 namespace Agriculture.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]/[action]")]
 public class UserController : ControllerBase
@@ -45,20 +47,37 @@ public class UserController : ControllerBase
         return Ok($"User Added {user.Name}");
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
-        var message = await _manager.RegisterAsync(dto, dto.Role);  
-        return Ok(message);
+        try
+        {
+            var message = await _manager.RegisterAsync(dto, dto.Role);
+            return Ok(message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("register-admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto dto)
     {
-        var message = await _manager.RegisterAsync(dto, Roles.Admin);
-        return Ok(message);
+        try
+        {
+            var message = await _manager.RegisterAsync(dto, Roles.Admin);
+            return Ok(message);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
@@ -122,7 +141,7 @@ public class UserController : ControllerBase
             issuer: jwtIssuer,
             audience: jwtAudience,
             claims: claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.UtcNow.AddHours(1),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

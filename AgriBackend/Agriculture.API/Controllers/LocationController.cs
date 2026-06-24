@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace Agriculture.API.Controllers;
 
+    [Authorize]
     [ApiController]
     [Route("[controller]/[action]")]
     public class LocationController : ControllerBase

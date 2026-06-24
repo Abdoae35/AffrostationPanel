@@ -63,7 +63,6 @@ public class UserManager : IUserManager
             Email = a.Email,
             Name = a.Name,
             Role = a.Role,
-            Password=a.Password,
         }).ToList();
     }
 
@@ -78,7 +77,6 @@ public class UserManager : IUserManager
             Id = user.Id,
             Email = user.Email,
             Name = user.Name,
-            Password = user.Password,
             Role = user.Role,
         };
     }

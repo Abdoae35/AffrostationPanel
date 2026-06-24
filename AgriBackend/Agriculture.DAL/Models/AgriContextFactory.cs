@@ -5,7 +5,7 @@ namespace Agriculture.DAL.Models;
 public class EbookContextFactory : IDesignTimeDbContextFactory<AgriContext>
 {
     private string cs =
-        "Server=localhost; Database=AgriRemoteDB; User Id=sa; Password=Abdo@1234; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True; ";
+        "Server=db49161.public.databaseasp.net; Database=db49161; User Id=db49161; Password=nX-6=x9ZD8#y; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;";
     public AgriContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AgriContext>();

@@ -1,8 +1,10 @@
 using Agriculiture.BLL.Dtos.TreeTypeDto;
 using Agriculiture.BLL.Manager.TreeTypeManager;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Agriculture.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]/[action]")]
 public class TreeTypeController : ControllerBase

@@ -1,0 +1,700 @@
+{
+  "info": {
+    "name": "Agriculture API",
+    "description": "# Agriculture API Collection\n\nThis collection covers all endpoints for the Agriculture Afforestation Tracking System.\n\nThe system is used to record and manage tree planting (afforestation) achievements — tracking **who planted**, **what tree**, **where**, **how many**, and **when**.\n\n---\n\n## How to Use\n\n1. Set the `baseUrl` variable to your server (e.g. `https://localhost:7001` for local, or your deployed server URL).\n2. Start with **Auth → Login** to get a JWT token.\n3. The token is saved automatically to the `token` variable for use in other requests.\n\n---\n\n## Roles\n- `0` = Admin\n- `1` = User\n- `2` = Viewer\n\n## Setup Order (first time)\n1. Register or Login\n2. Add Location Types\n3. Add Locations\n4. Add Tree Types\n5. Add Trees\n6. Add Afforestation Records",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7197",
+      "description": "Change this to your deployed server URL when going to production. Example: https://your-server.com"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "description": "JWT token — filled automatically after Login"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth (User)",
+      "description": "Authentication and user management endpoints. Start here — login first to get a token.",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "    console.log('Token saved:', json.token);",
+                  "    console.log('Role:', json.role);",
+                  "    console.log('UserId:', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@agriculture.com\",\n  \"password\": \"Admin123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/User/Login/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "Login", "login"]
+            },
+            "description": "## Login\n\nAuthenticates a user and returns a JWT token.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| email | string | Yes | User's email |\n| password | string | Yes | User's password |\n\n### Success Response (200)\n```json\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIs...\",\n  \"role\": \"Admin\",\n  \"id\": 1,\n  \"email\": \"admin@agriculture.com\"\n}\n```\n\n### Failure Response (401)\n`Unauthorized` — wrong email or password.\n\n> **The token is saved automatically** to the `token` variable so all other requests use it."
+          }
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ahmed Mohamed\",\n  \"email\": \"ahmed@agriculture.com\",\n  \"password\": \"Ahmed123!\",\n  \"role\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/User/Register/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "Register", "register"]
+            },
+            "description": "## Register User\n\nRegisters a new user. No token required — this endpoint is public.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| name | string | Yes | Full name |\n| email | string | Yes | Email address |\n| password | string | Yes | Password |\n| role | int | Yes | 0 = Admin, 1 = User, 2 = Viewer |\n\n### Success Response (200)\n`\"Registration successful.\"`\n\n### Failure (400)\n`\"Email already registered.\"` — email is already in use.\n\n### Notes\n- Use **Register Admin** endpoint if you want to force-register an Admin (requires Admin token)."
+          }
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Super Admin\",\n  \"email\": \"superadmin@agriculture.com\",\n  \"password\": \"Admin123!\",\n  \"role\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/User/RegisterAdmin/register-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "RegisterAdmin", "register-admin"]
+            },
+            "description": "## Register Admin\n\nRegisters a new user and forces the role to **Admin**, regardless of what is sent in the body.\n\nThis endpoint is public — no token required. Use it to create your first Admin account.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| name | string | Yes | Full name |\n| email | string | Yes | Email |\n| password | string | Yes | Password |\n| role | int | Ignored | Always set to Admin (0) |\n\n### Success Response (200)\n`\"Registration successful.\"`\n\n### Failure (400)\n`\"Email already registered.\"` — email is already in use."
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/User/GetAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "GetAll"]
+            },
+            "description": "## Get All Users\n\nReturns a list of all registered users.\n\n> **Requires:** JWT token.\n\n### Success Response (200)\n```json\n[\n  {\n    \"id\": 1,\n    \"name\": \"Ahmed Mohamed\",\n    \"email\": \"ahmed@agriculture.com\",\n    \"role\": 1\n  }\n]\n```"
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/User/GetById/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "GetById", "1"]
+            },
+            "description": "## Get User By ID\n\nReturns a single user by their ID.\n\n> **Requires:** JWT token.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | The user's ID |\n\n### Success Response (200)\n```json\n{\n  \"id\": 1,\n  \"name\": \"Ahmed Mohamed\",\n  \"email\": \"ahmed@agriculture.com\",\n  \"role\": 1\n}\n```\n\n### Failure (404)\nUser not found."
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Ahmed Updated\",\n  \"email\": \"ahmed_updated@agriculture.com\",\n  \"password\": \"NewPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/User/UpdateUser",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "UpdateUser"]
+            },
+            "description": "## Update User\n\nUpdates an existing user's information.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| id | int | Yes | The user's ID to update |\n| name | string | No | New full name |\n| email | string | No | New email |\n| password | string | No | New password |\n\n### Success Response (200)\nEmpty 200 OK."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/User/DeleteUser/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["User", "DeleteUser", "1"]
+            },
+            "description": "## Delete User\n\nPermanently deletes a user by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | The user's ID to delete |\n\n### Success Response (200)\nEmpty 200 OK.\n\n### Failure (404)\nUser not found — returns error message."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tree Types",
+      "description": "Manage tree categories (e.g. Fruit Trees, Forest Trees, Ornamental Trees). These are the top-level categories that Tree Names belong to.",
+      "item": [
+        {
+          "name": "Get All Tree Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/TreeType/GetAllTreeType",
+              "host": ["{{baseUrl}}"],
+              "path": ["TreeType", "GetAllTreeType"]
+            },
+            "description": "## Get All Tree Types\n\nReturns all tree type categories.\n\n### Success Response (200)\n```json\n[\n  { \"id\": 1, \"type\": \"Fruit Trees\" },\n  { \"id\": 2, \"type\": \"Forest Trees\" }\n]\n```"
+          }
+        },
+        {
+          "name": "Get Tree Type By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/TreeType/GetTreeType/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["TreeType", "GetTreeType", "1"]
+            },
+            "description": "## Get Tree Type By ID\n\nReturns a single tree type by its ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Tree type ID |\n\n### Success Response (200)\n```json\n{ \"id\": 1, \"type\": \"Fruit Trees\" }\n```\n\n### Failure (404)\nNot found."
+          }
+        },
+        {
+          "name": "Add New Tree Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"Fruit Trees\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/TreeType/AddNewType",
+              "host": ["{{baseUrl}}"],
+              "path": ["TreeType", "AddNewType"]
+            },
+            "description": "## Add New Tree Type\n\nCreates a new tree category.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| type | string | Yes | Name of the tree category (e.g. \"Fruit Trees\") |\n\n### Success Response (200)\n`\"Type Fruit Trees Added\"`"
+          }
+        },
+        {
+          "name": "Update Tree Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"type\": \"Fruit Trees Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/TreeType/UpdateType",
+              "host": ["{{baseUrl}}"],
+              "path": ["TreeType", "UpdateType"]
+            },
+            "description": "## Update Tree Type\n\nUpdates an existing tree type category.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| id | int | Yes | ID of the type to update |\n| type | string | Yes | New name (cannot be empty) |\n\n### Success Response (200)\n`\"Type Fruit Trees Updated Updated\"`\n\n### Failure (400)\nIf `type` is empty.\n\n### Failure (404)\nID not found."
+          }
+        },
+        {
+          "name": "Delete Tree Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/TreeType/DeleteTypes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["TreeType", "DeleteTypes", "1"]
+            },
+            "description": "## Delete Tree Type\n\nDeletes a tree type by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Tree type ID to delete |\n\n### Success Response (200)\n`\"Type 1 Deleted\"`\n\n### Failure (404)\n`\"Type 1 Not Deleted\"` — ID not found."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trees (Tree Names)",
+      "description": "Manage individual tree species/names. Each tree belongs to a Tree Type. Trees also have an optional scientific name.",
+      "item": [
+        {
+          "name": "Get All Trees",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Tree/GetAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "GetAll"]
+            },
+            "description": "## Get All Trees\n\nReturns all tree names/species in the system.\n\n### Success Response (200)\n```json\n[\n  {\n    \"id\": 1,\n    \"name\": \"Apple\",\n    \"scientificName\": \"Malus domestica\",\n    \"typeId\": 1\n  }\n]\n```"
+          }
+        },
+        {
+          "name": "Get Tree By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Tree/GetById/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "GetById", "1"]
+            },
+            "description": "## Get Tree By ID\n\nReturns a single tree by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Tree ID |\n\n### Success Response (200)\n```json\n{\n  \"id\": 1,\n  \"name\": \"Apple\",\n  \"scientificName\": \"Malus domestica\",\n  \"typeId\": 1\n}\n```\n\n### Failure (404)\nNot found."
+          }
+        },
+        {
+          "name": "Get Trees By Type ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Tree/GetByTypeId/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "GetByTypeId", "1"]
+            },
+            "description": "## Get Trees By Type ID\n\nReturns all trees that belong to a specific tree type category.\n\nUseful for **cascading dropdowns** in the Flutter app: when user selects a Tree Type, load the trees of that type.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| typeId | int | Tree Type ID |\n\n### Success Response (200)\n```json\n[\n  { \"id\": 1, \"name\": \"Apple\", \"scientificName\": \"Malus domestica\", \"typeId\": 1 }\n]\n```\n\n### Failure (404) — Two cases\n- `\"Type is not exist\"` — the typeId doesn't exist at all\n- `\"Type is exist but no tree Assigned to\"` — valid type but no trees added yet"
+          }
+        },
+        {
+          "name": "Add New Tree",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apple\",\n  \"scientificName\": \"Malus domestica\",\n  \"typeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Tree/Add",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "Add"]
+            },
+            "description": "## Add New Tree\n\nAdds a new tree species/name to the system.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| name | string | Yes | Common name (e.g. \"Apple\") |\n| scientificName | string | No | Scientific name (e.g. \"Malus domestica\") |\n| typeId | int | Yes | ID of the Tree Type this tree belongs to |\n\n### Success Response (200)\nEmpty 200 OK."
+          }
+        },
+        {
+          "name": "Update Tree",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Apple Updated\",\n  \"scientificName\": \"Malus domestica\",\n  \"typeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Tree/UpdateTree",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "UpdateTree"]
+            },
+            "description": "## Update Tree\n\nUpdates an existing tree.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| id | int | Yes | Tree ID (must be > 0) |\n| name | string | No | New common name |\n| scientificName | string | No | New scientific name |\n| typeId | int | No | New tree type ID |\n\n### Success Response (200)\n`\"Tree updated successfully.\"`\n\n### Failure (400)\n`id` is 0 or body is null.\n\n### Failure (404)\nTree not found."
+          }
+        },
+        {
+          "name": "Delete Tree",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Tree/Delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Tree", "Delete", "1"]
+            },
+            "description": "## Delete Tree\n\nPermanently deletes a tree by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Tree ID to delete |\n\n### Success Response (200)\n`\"Tree with 1 deleted successfully.\"`\n\n### Failure (404)\n`\"Tree with 1 not found.\"`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location Types",
+      "description": "Manage location categories (e.g. City, Village, Forest, Industrial Zone). Location Names belong to a Location Type.",
+      "item": [
+        {
+          "name": "Get All Location Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/LocationType/GetAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["LocationType", "GetAll"]
+            },
+            "description": "## Get All Location Types\n\nReturns all location type categories.\n\n### Success Response (200)\n```json\n[\n  { \"id\": 1, \"locationType\": \"City\" },\n  { \"id\": 2, \"locationType\": \"Village\" }\n]\n```"
+          }
+        },
+        {
+          "name": "Get Location Type By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/LocationType/GetById/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["LocationType", "GetById", "1"]
+            },
+            "description": "## Get Location Type By ID\n\nReturns a single location type by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Location type ID |\n\n### Success Response (200)\n```json\n{ \"id\": 1, \"locationType\": \"City\" }\n```"
+          }
+        },
+        {
+          "name": "Add New Location Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"locationType\": \"City\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/LocationType/AddNewType",
+              "host": ["{{baseUrl}}"],
+              "path": ["LocationType", "AddNewType"]
+            },
+            "description": "## Add New Location Type\n\nCreates a new location category.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| locationType | string | Yes | Name of the category (e.g. \"City\") |\n\n### Success Response (200)\n`\"LocationType City\"`"
+          }
+        },
+        {
+          "name": "Update Location Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"locationType\": \"Urban City\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/LocationType/UpdateLocationType",
+              "host": ["{{baseUrl}}"],
+              "path": ["LocationType", "UpdateLocationType"]
+            },
+            "description": "## Update Location Type\n\nUpdates a location type by ID.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| id | int | Yes | Location type ID |\n| locationType | string | Yes | New name (cannot be empty) |\n\n### Success Response (200)\n`\"Location Urban City Updated\"`\n\n### Failure (400)\nIf `locationType` is empty.\n\n### Failure (404)\nID not found."
+          }
+        },
+        {
+          "name": "Delete Location Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/LocationType/Delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["LocationType", "Delete", "1"]
+            },
+            "description": "## Delete Location Type\n\nDeletes a location type by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Location type ID to delete |\n\n### Success Response (200)\n`\"LocationType 1 deleted\"`\n\n### Failure (404)\n`\"LocationType 1 not found\"`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations (Location Names)",
+      "description": "Manage specific location names (e.g. Cairo, Alexandria). Each location belongs to a Location Type.",
+      "item": [
+        {
+          "name": "Get All Locations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Location/GetAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "GetAll"]
+            },
+            "description": "## Get All Locations\n\nReturns all location names in the system.\n\n### Success Response (200)\n```json\n[\n  {\n    \"id\": 1,\n    \"name\": \"Cairo\",\n    \"locationTypeId\": 1\n  }\n]\n```"
+          }
+        },
+        {
+          "name": "Get Location By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Location/GetById/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "GetById", "1"]
+            },
+            "description": "## Get Location By ID\n\nReturns a single location by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Location ID |\n\n### Success Response (200)\n```json\n{ \"id\": 1, \"name\": \"Cairo\", \"locationTypeId\": 1 }\n```\n\n### Failure (404)\nNot found."
+          }
+        },
+        {
+          "name": "Get Locations By Location Type ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Location/GetByLocationTypeId/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "GetByLocationTypeId", "1"]
+            },
+            "description": "## Get Locations By Location Type ID\n\nReturns all locations that belong to a specific location type.\n\nUseful for **cascading dropdowns** in Flutter: when user selects a Location Type, load locations of that type.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| locationTypeId | int | Location Type ID |\n\n### Success Response (200)\n```json\n[\n  { \"id\": 1, \"name\": \"Cairo\", \"locationTypeId\": 1 },\n  { \"id\": 2, \"name\": \"Giza\", \"locationTypeId\": 1 }\n]\n```\n\n### Failure (404)\nNot found."
+          }
+        },
+        {
+          "name": "Add New Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cairo\",\n  \"locationTypeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Location/Add",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "Add"]
+            },
+            "description": "## Add New Location\n\nAdds a new location name.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| name | string | Yes | Location name (e.g. \"Cairo\") |\n| locationTypeId | int | Yes | ID of the Location Type this location belongs to |\n\n### Success Response (200)\nEmpty 200 OK."
+          }
+        },
+        {
+          "name": "Update Location",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Cairo Updated\",\n  \"locationTypeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Location/UpdateLocation",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "UpdateLocation"]
+            },
+            "description": "## Update Location\n\nUpdates an existing location.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| id | int | Yes | Location ID (must be > 0) |\n| name | string | No | New location name |\n| locationTypeId | int | No | New location type ID |\n\n### Success Response (200)\n`\"Location Name : Cairo Updated has been updated.\"`\n\n### Failure (400)\n`id` is 0 or body is null."
+          }
+        },
+        {
+          "name": "Delete Location",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Location/Delete/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["Location", "Delete", "1"]
+            },
+            "description": "## Delete Location\n\nDeletes a location by ID.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Location ID to delete |\n\n### Success Response (200)\n`\"Location with 1 has been deleted.\"`\n\n### Failure (404)\n`\"Location with 1 not found.\"`"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Afforestation Records",
+      "description": "The core of the system. Each record represents a planting event: who planted, what tree (name + type), where (location + location type), how many trees, and on what date.\n\n## Record Fields\n- `dateOfPlanted` — date in `YYYY-MM-DD` format\n- `treeTypeId` — must exist in Tree Types\n- `treeNameId` — must exist in Trees and belong to the treeTypeId\n- `locationTypeId` — must exist in Location Types\n- `locationNameId` — must exist in Locations and belong to the locationTypeId\n- `userId` — must exist in Users\n- `number` — count of trees planted",
+      "item": [
+        {
+          "name": "Search Records (All Results)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromDate\": null,\n  \"toDate\": null,\n  \"selectedUserId\": null,\n  \"selectedLocationId\": null,\n  \"selectedTreeId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/search",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "search"]
+            },
+            "description": "## Search Afforestation Records (All Results)\n\nSearches records with optional filters and returns **all matching results** (no pagination).\n\nSend `null` for any filter you don't want to apply — passing all nulls returns every record.\n\n### Request Body (all fields optional)\n| Field | Type | Description |\n|---|---|---|\n| fromDate | string (YYYY-MM-DD) | Filter records planted on or after this date |\n| toDate | string (YYYY-MM-DD) | Filter records planted on or before this date |\n| selectedUserId | int | Filter by a specific user |\n| selectedLocationId | int | Filter by a specific location |\n| selectedTreeId | int | Filter by a specific tree species |\n\n### Example — Filter by date range and user\n```json\n{\n  \"fromDate\": \"2025-01-01\",\n  \"toDate\": \"2025-12-31\",\n  \"selectedUserId\": 2,\n  \"selectedLocationId\": null,\n  \"selectedTreeId\": null\n}\n```\n\n### Success Response (200)\n```json\n[\n  {\n    \"id\": 1,\n    \"dateOfPlanted\": \"2025-06-15\",\n    \"treeName\": \"Apple\",\n    \"treeNameId\": 1,\n    \"scientificName\": \"Malus domestica\",\n    \"treeTypeName\": \"Fruit Trees\",\n    \"treeTypeId\": 1,\n    \"locationId\": 1,\n    \"locationTypeId\": 1,\n    \"locationTypeName\": \"City\",\n    \"locationName\": \"Cairo\",\n    \"userName\": \"Ahmed Mohamed\",\n    \"number\": 50\n  }\n]\n```\n\n> Results are ordered by `dateOfPlanted` ascending."
+          }
+        },
+        {
+          "name": "Search Records (Paginated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromDate\": null,\n  \"toDate\": null,\n  \"selectedUserId\": null,\n  \"selectedLocationId\": null,\n  \"selectedTreeId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/PaginatedSearch?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "PaginatedSearch"],
+              "query": [
+                { "key": "page", "value": "1", "description": "Page number (starts at 1)" },
+                { "key": "pageSize", "value": "10", "description": "Number of records per page (default: 10)" }
+              ]
+            },
+            "description": "## Search Afforestation Records (Paginated)\n\nSame filters as the regular search, but returns results in pages. Use this for lists in the Flutter app.\n\n### Query Parameters\n| Parameter | Type | Default | Description |\n|---|---|---|---|\n| page | int | 1 | Page number (1-based) |\n| pageSize | int | 10 | Records per page |\n\n### Request Body\nSame as **Search Records (All Results)** — all filters optional.\n\n### Success Response (200)\n```json\n{\n  \"items\": [\n    {\n      \"id\": 1,\n      \"dateOfPlanted\": \"2025-06-15\",\n      \"treeName\": \"Apple\",\n      \"treeNameId\": 1,\n      \"scientificName\": \"Malus domestica\",\n      \"treeTypeName\": \"Fruit Trees\",\n      \"treeTypeId\": 1,\n      \"locationId\": 1,\n      \"locationTypeId\": 1,\n      \"locationTypeName\": \"City\",\n      \"locationName\": \"Cairo\",\n      \"userName\": \"Ahmed Mohamed\",\n      \"number\": 50\n    }\n  ],\n  \"totalCount\": 100,\n  \"page\": 1,\n  \"pageSize\": 10\n}\n```\n\n### Flutter Usage Example\n- Page 1: `?page=1&pageSize=20`\n- Page 2: `?page=2&pageSize=20`\n- Total pages = `ceil(totalCount / pageSize)`"
+          }
+        },
+        {
+          "name": "Get Record By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "1"]
+            },
+            "description": "## Get Afforestation Record By ID\n\nReturns the full details of a single planting record.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Record ID |\n\n### Success Response (200)\n```json\n{\n  \"id\": 1,\n  \"dateOfPlanted\": \"2025-06-15\",\n  \"treeName\": \"Apple\",\n  \"treeNameId\": 1,\n  \"scientificName\": \"Malus domestica\",\n  \"treeTypeName\": \"Fruit Trees\",\n  \"treeTypeId\": 1,\n  \"locationId\": 1,\n  \"locationTypeId\": 1,\n  \"locationTypeName\": \"City\",\n  \"locationName\": \"Cairo\",\n  \"userName\": \"Ahmed Mohamed\",\n  \"number\": 50\n}\n```\n\n### Failure (404)\n```json\n{ \"success\": false, \"message\": \"Record not found\" }\n```"
+          }
+        },
+        {
+          "name": "Add New Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateOfPlanted\": \"2025-06-15\",\n  \"treeTypeId\": 1,\n  \"treeNameId\": 1,\n  \"locationTypeId\": 1,\n  \"locationNameId\": 1,\n  \"userId\": 1,\n  \"number\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/Add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "Add"]
+            },
+            "description": "## Add New Afforestation Record\n\nCreates a new planting record. This is the main data entry endpoint of the whole system.\n\n### Request Body\n| Field | Type | Required | Description |\n|---|---|---|---|\n| dateOfPlanted | string (YYYY-MM-DD) | Yes | Date the trees were planted |\n| treeTypeId | int | Yes | Tree type category ID |\n| treeNameId | int | Yes | Specific tree species ID |\n| locationTypeId | int | Yes | Location type category ID |\n| locationNameId | int | Yes | Specific location ID |\n| userId | int | Yes | ID of the user who did the planting |\n| number | int | Yes | Number of trees planted |\n\n### Success Response (200)\nReturns the submitted DTO back:\n```json\n{\n  \"dateOfPlanted\": \"2025-06-15\",\n  \"treeTypeId\": 1,\n  \"treeNameId\": 1,\n  \"locationTypeId\": 1,\n  \"locationNameId\": 1,\n  \"userId\": 1,\n  \"number\": 50\n}\n```\n\n### Important\nAll IDs must be valid existing records. The API does not validate FK existence at the controller level — invalid IDs will cause a database error."
+          }
+        },
+        {
+          "name": "Update Record",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"dateOfPlanted\": \"2025-07-01\",\n  \"treeTypeId\": 1,\n  \"treeNameId\": 2,\n  \"locationId\": 1,\n  \"locationTypeId\": 1,\n  \"number\": 75\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "1"]
+            },
+            "description": "## Update Afforestation Record\n\nPartially updates an existing planting record. Only the fields you provide (non-null) will be updated.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Record ID to update |\n\n### Request Body (all fields optional except id)\n| Field | Type | Description |\n|---|---|---|\n| id | int | Record ID (must match path ID) |\n| dateOfPlanted | string (YYYY-MM-DD) | New date |\n| treeTypeId | int | New tree type |\n| treeNameId | int | New tree species |\n| locationId | int | New location (note: field is `locationId`, not `locationNameId`) |\n| locationTypeId | int | New location type |\n| number | int | New count of trees |\n\n### Success Response (200)\n```json\n{\n  \"success\": true,\n  \"message\": \"Record updated successfully\",\n  \"updatedData\": { ... }\n}\n```\n\n### Failure (404)\n```json\n{ \"success\": false, \"message\": \"Record not found\" }\n```"
+          }
+        },
+        {
+          "name": "Delete Record",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "1"]
+            },
+            "description": "## Delete Afforestation Record\n\nPermanently deletes a planting record.\n\n### Path Parameter\n| Parameter | Type | Description |\n|---|---|---|\n| id | int | Record ID to delete |\n\n### Success Response (200)\n`\"Record deleted successfully\"`\n\n### Failure (404)\nRecord not found."
+          }
+        },
+        {
+          "name": "Export to Excel",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromDate\": null,\n  \"toDate\": null,\n  \"selectedUserId\": null,\n  \"selectedLocationId\": null,\n  \"selectedTreeId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/afforestation/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "afforestation", "export"]
+            },
+            "description": "## Export Afforestation Records to Excel\n\nExports afforestation records matching the given filters as a downloadable `.xlsx` Excel file.\n\nSend `null` for any filter you don't want to apply — passing all nulls exports every record.\n\n---\n\n### Request Body (all fields optional)\n| Field | Type | Description |\n|---|---|---|\n| fromDate | string (YYYY-MM-DD) | Export records planted on or after this date |\n| toDate | string (YYYY-MM-DD) | Export records planted on or before this date |\n| selectedUserId | int | Filter by a specific user ID |\n| selectedLocationId | int | Filter by a specific location ID |\n| selectedTreeId | int | Filter by a specific tree species ID |\n\n### Example — Export records for a date range\n```json\n{\n  \"fromDate\": \"2025-01-01\",\n  \"toDate\": \"2025-12-31\",\n  \"selectedUserId\": null,\n  \"selectedLocationId\": null,\n  \"selectedTreeId\": null\n}\n```\n\n---\n\n### Success Response (200)\nReturns a binary `.xlsx` file download.\n\n**Content-Type:** `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`\n\n**File name format:** `Afforestation(dd-MM-yyyy) to (dd-MM-yyyy).xlsx`\n\nIf no date filters are applied, the file is named: `Afforestation(All) to (All).xlsx`\n\n**Excel columns (in order):**\n| Column | Description |\n|---|---|\n| Date Planted | Date in `YYYY-MM-DD` format |\n| Plant Name | Common tree name |\n| Scientific Name | Scientific tree name |\n| Plant Type | Tree type category |\n| Location Name | Location name |\n| Number | Number of trees planted |\n| User Name | Name of the user who planted |\n\n---\n\n### Failure (400)\n`\"No data found for the given filters.\"` — no records matched the filters.\n\n---\n\n> **In Postman:** Click **Send and Download** (not Send) to save the file to your computer."
+          }
+        }
+      ]
+    }
+  ]
+}
