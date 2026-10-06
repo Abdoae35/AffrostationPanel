@@ -12,7 +12,6 @@ public class AddTreeTypeController : Controller
     public AddTreeTypeController(HttpClient client)
     {
         _client = client;
-        _client.BaseAddress = new Uri("https://localhost:7197/");
     }
 
     [HttpGet]

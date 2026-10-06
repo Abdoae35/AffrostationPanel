@@ -14,7 +14,6 @@ public class AddNewLocationController : Controller
    public AddNewLocationController(HttpClient client)
    {
       _client = client;
-      _client.BaseAddress = new Uri("https://localhost:7197/");
    }
 
 

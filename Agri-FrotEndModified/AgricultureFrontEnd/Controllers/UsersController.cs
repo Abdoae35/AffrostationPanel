@@ -5,21 +5,16 @@ using Microsoft.AspNetCore.Authorization;
 [Authorize(Roles = "Admin")]
 public class UsersController : Controller
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly HttpClient _client;
 
-    public UsersController(IHttpClientFactory httpClientFactory, HttpClient client)
+    public UsersController(HttpClient client)
     {
-        _httpClientFactory = httpClientFactory;
         _client = client;
-        _client.BaseAddress = new Uri("https://localhost:7197/");
     }
 
     public async Task<IActionResult> ShowUsers()
     {
-        using var client = _httpClientFactory.CreateClient();
-        var response = await client.GetFromJsonAsync<List<UserReadVM>>(
-            "https://localhost:7197/User/GetAll");
+        var response = await _client.GetFromJsonAsync<List<UserReadVM>>("User/GetAll");
 
         return View(response);
     }
@@ -33,12 +28,10 @@ public class UsersController : Controller
     [HttpPost]
     public async Task<IActionResult> ResetPassword(UserUpdateVM vm)
     {
-        await _client.PutAsJsonAsync($"https://localhost:7197/User/UpdateUser", vm);
+        await _client.PutAsJsonAsync("User/UpdateUser", vm);
         TempData["SuccessMessage"] = "Password was updated successfully!";
         return RedirectToAction(nameof(ShowUsers));
-        
     }
-    
 
     [HttpDelete]
     public async Task<IActionResult> DeleteUser(int id)
@@ -48,17 +41,14 @@ public class UsersController : Controller
             return BadRequest("Invalid user ID.");
         }
 
-        using var client = _httpClientFactory.CreateClient();
-        var url = $"https://localhost:7197/User/DeleteUser/{id}";
-
-        var response = await client.DeleteAsync(url);
+        var response = await _client.DeleteAsync($"User/DeleteUser/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
             return BadRequest($"Failed to delete user with ID {id}.");
         }
 
-        var users = await client.GetFromJsonAsync<List<UserReadVM>>("https://localhost:7197/User/GetAll");
+        var users = await _client.GetFromJsonAsync<List<UserReadVM>>("User/GetAll");
         return PartialView("_UsersTable", users ?? new List<UserReadVM>());
     }
 }

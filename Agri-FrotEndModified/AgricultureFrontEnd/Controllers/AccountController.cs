@@ -30,7 +30,7 @@ public class AccountController : Controller
         var json = JsonSerializer.Serialize(dto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("https://localhost:7197/User/Login/login", content);
+        var response = await client.PostAsync("http://agricultureachievement.runasp.net/User/Login/login", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -44,6 +44,9 @@ public class AccountController : Controller
             {
                 throw new Exception("Token from API is null or empty.");
             }
+
+            // Store the JWT token in session so it can be attached to backend API calls
+            HttpContext.Session.SetString("JWToken", result.Token);
 
             if (result.Role != null)
             {

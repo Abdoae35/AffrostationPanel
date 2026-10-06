@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AgricultureFrontEnd.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +14,18 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
-// Register named HttpClient for API
+// Register the auth handler that attaches the JWT token to outgoing requests
+builder.Services.AddTransient<BackendApiAuthHandler>();
+
+// Register named HttpClient for API (with JWT auth handler)
 builder.Services.AddHttpClient("BackendAPI", client =>
 {
     client.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
-});
+}).AddHttpMessageHandler<BackendApiAuthHandler>();
+
+// Register default HttpClient for direct injection in controllers
+builder.Services.AddScoped(sp =>
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient("BackendAPI"));
 
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();

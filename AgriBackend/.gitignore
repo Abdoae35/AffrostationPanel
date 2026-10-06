@@ -1,0 +1,46 @@
+## Visual Studio & Rider
+.vs/
+.idea/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.userprefs
+
+## Build & Output Directories
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Tt]est[Rr]esults/
+[Aa]pp_Data/
+
+## Compilation & Binary Artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.vsidx
+
+## Publish & Deployment Outputs
+[Pp]ublish/
+[Pp]ub[Tt]mp/
+*.pubxml.user
+*.publishSettings
+
+## Dotnet / Nuget
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.nupkg
+*.snupkg
+
+## OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+## Environment / Local Secrets
+appsettings.Local.json
+secrets.json

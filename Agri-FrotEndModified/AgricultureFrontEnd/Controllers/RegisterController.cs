@@ -9,7 +9,6 @@ public class RegisterController : Controller
     public RegisterController(HttpClient client)
     {
         _client = client;
-        _client.BaseAddress = new Uri("https://localhost:7197/");
     }
     
     [HttpGet]
