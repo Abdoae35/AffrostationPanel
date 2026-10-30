@@ -14,6 +14,7 @@ namespace Agriculture.API.Controllers;
             _manager = manager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] LocationNameAddDto dto)
         {
@@ -28,6 +29,7 @@ namespace Agriculture.API.Controllers;
             return Ok(locations);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -56,6 +58,7 @@ namespace Agriculture.API.Controllers;
                 return NotFound();
             return Ok(locations);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateLocation([FromBody] LocationNameUpdateDto dto)
         {

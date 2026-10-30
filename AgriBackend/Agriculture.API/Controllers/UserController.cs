@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Agriculture.API.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("[controller]/[action]")]
 public class UserController : ControllerBase
@@ -47,7 +47,6 @@ public class UserController : ControllerBase
         return Ok($"User Added {user.Name}");
     }
 
-    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
@@ -56,13 +55,12 @@ public class UserController : ControllerBase
             var message = await _manager.RegisterAsync(dto, dto.Role);
             return Ok(message);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return BadRequest(ex.Message);
+            return BadRequest("Registration failed.");
         }
     }
 
-    [AllowAnonymous]
     [HttpPost("register-admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto dto)
     {
@@ -71,9 +69,9 @@ public class UserController : ControllerBase
             var message = await _manager.RegisterAsync(dto, Roles.Admin);
             return Ok(message);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return BadRequest(ex.Message);
+            return BadRequest("Registration failed.");
         }
     }
 

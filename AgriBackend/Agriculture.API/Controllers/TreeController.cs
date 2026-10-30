@@ -14,6 +14,7 @@ public class TreeController : ControllerBase
         _treeNameManager = treeNameManager;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult Add([FromBody] TreeNameAddDto nameAddTreeName)
     {
@@ -29,6 +30,7 @@ public class TreeController : ControllerBase
         return Ok(trees);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -68,6 +70,7 @@ public class TreeController : ControllerBase
         
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> UpdateTree(TreeUpdateDto treeUpdateDto)
     {

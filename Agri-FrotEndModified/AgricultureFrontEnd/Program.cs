@@ -20,7 +20,7 @@ builder.Services.AddTransient<BackendApiAuthHandler>();
 // Register named HttpClient for API (with JWT auth handler)
 builder.Services.AddHttpClient("BackendAPI", client =>
 {
-    client.BaseAddress = new Uri("http://agricultureachievement.runasp.net/");
+    client.BaseAddress = new Uri(builder.Configuration["BackendApi:BaseUrl"] ?? "https://agricultureachievement.runasp.net/");
 }).AddHttpMessageHandler<BackendApiAuthHandler>();
 
 // Register default HttpClient for direct injection in controllers
