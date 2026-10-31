@@ -1,16 +1,13 @@
-
-
 namespace Agriculture.DAL.Models;
 
 public class EbookContextFactory : IDesignTimeDbContextFactory<AgriContext>
 {
-    private string cs =
-        "Server=db49161.public.databaseasp.net; Database=db49161; User Id=db49161; Password=nX-6=x9ZD8#y; Encrypt=True; TrustServerCertificate=True; MultipleActiveResultSets=True;";
     public AgriContext CreateDbContext(string[] args)
     {
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__cs")
+            ?? throw new InvalidOperationException("Set ConnectionStrings__cs for EF design-time commands.");
         var optionsBuilder = new DbContextOptionsBuilder<AgriContext>();
-        optionsBuilder.UseSqlServer(cs);
-
+        optionsBuilder.UseSqlServer(connectionString);
         return new AgriContext(optionsBuilder.Options);
     }
 }

@@ -1,6 +1,12 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || Encoding.UTF8.GetByteCount(jwtKey) < 32)
+    throw new InvalidOperationException("Configure Jwt:Key with at least 32 UTF-8 bytes using a secret provider.");
+if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("cs")))
+    throw new InvalidOperationException("Configure ConnectionStrings:cs using a secret provider.");
+
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -25,7 +31,7 @@ builder.Services.AddAuthentication(options =>
                 ValidIssuer = builder.Configuration["Jwt:Issuer"],
                 ValidAudience = builder.Configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    Encoding.UTF8.GetBytes(jwtKey))
             };
         });
 

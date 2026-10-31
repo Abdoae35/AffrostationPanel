@@ -25,12 +25,12 @@ public class AccountController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginVm dto)
     {
-        var client = _clientFactory.CreateClient();
+        var client = _clientFactory.CreateClient("BackendAPI");
 
         var json = JsonSerializer.Serialize(dto);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("http://agricultureachievement.runasp.net/User/Login/login", content);
+        var response = await client.PostAsync("User/Login/login", content);
 
         if (response.IsSuccessStatusCode)
         {
@@ -78,6 +78,7 @@ public class AccountController : Controller
 
     public async Task<IActionResult> Logout()
     {
+        HttpContext.Session.Clear();
         await HttpContext.SignOutAsync("MyCookieAuth");
         return RedirectToAction("Login");
     }

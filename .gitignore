@@ -44,3 +44,18 @@ Desktop.ini
 ## Environment / Local Secrets
 appsettings.Local.json
 secrets.json
+
+# Local secrets and deployment profiles
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+*.pubxml
+*.pfx
+*.p12
+*.key
+*.pem
+*.log
+*.bak
+*.backup
+*.sql.bak

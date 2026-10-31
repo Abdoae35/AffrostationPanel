@@ -29,6 +29,7 @@ public class LocationTypeController : ControllerBase
       return Ok(result);
    }
 
+   [Authorize(Roles = "Admin")]
    [HttpPost]
    public async Task<IActionResult> AddNewType(LocationTypeAddDto locationTypeAddDto)
    {
@@ -37,6 +38,7 @@ public class LocationTypeController : ControllerBase
       
    }
 
+   [Authorize(Roles = "Admin")]
    [HttpDelete("{id}")]
    public async Task<IActionResult> Delete(int id)
    {
@@ -46,6 +48,7 @@ public class LocationTypeController : ControllerBase
       else
          return NotFound($"LocationType {id} not found");
    }
+   [Authorize(Roles = "Admin")]
    [HttpPut]
    public async Task<IActionResult> UpdateLocationType( LocationTypeUpdateDto locationTypeDto)
    {

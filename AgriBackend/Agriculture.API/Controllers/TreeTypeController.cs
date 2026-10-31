@@ -23,6 +23,7 @@ public class TreeTypeController : ControllerBase
         return Ok(trees);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> AddNewType([FromBody] TreeTypeAddDto treeDto)
     {
@@ -30,6 +31,7 @@ public class TreeTypeController : ControllerBase
         return Ok($"Type {treeDto.Type} Added");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete ("{id}")]
     public async Task<IActionResult> DeleteTypes(int id)
     {
@@ -50,6 +52,7 @@ public class TreeTypeController : ControllerBase
          return Ok(tree);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut]
     public async Task<IActionResult> UpdateType(TreeTypeUpdateDto treeDto)
     {

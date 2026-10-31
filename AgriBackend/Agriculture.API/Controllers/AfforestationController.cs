@@ -33,9 +33,15 @@ namespace Agriculture.API.Controllers;
         
         
 
+        [Authorize(Roles = "User,Admin")]
         [HttpPost("Add")]
         public async Task<IActionResult> Insert([FromBody] AfforestationAddDto afforestationAddDto)
         {
+            if (!int.TryParse(User.FindFirst("UserId")?.Value, out var userId))
+                return Unauthorized();
+            if (!User.IsInRole("Admin") && afforestationAddDto.UserId != userId)
+                return Forbid();
+
             await _manager.insert(afforestationAddDto);
             return Ok(afforestationAddDto);
         }
@@ -49,6 +55,7 @@ namespace Agriculture.API.Controllers;
             return Ok(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -60,6 +67,7 @@ namespace Agriculture.API.Controllers;
             return Ok($"Record  deleted successfully");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] AfforestationUpdateDto dto)
         {
